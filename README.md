@@ -26,6 +26,42 @@ AI 生成动画的配方     源视频 → 透明动画的管线    运行在 DS
 
 ---
 
+## 🌿 dsh-nhd：纳西妲（Nahida）pet pack
+
+本仓库是 dsh-pet 的衍生分支：在原鲸鱼娘之外，新增了独立宠物种类「**纳西妲**」——依据 20 张小红书参考图定稿的 Q 版萌化形象，外加一张 4.5 头身娘化立绘。动画池、权重、事件档位与主宠物**结构级对齐**（106 个动画槽位、余额 6 档、工作状态 6 档、碎碎念 3 档、80 个分类随机动作），两种宠物可以同屏相处。
+
+### 形象展示
+
+<p>
+  <img src="dsh-pet/assets/nhd/chibi-idle.png" width="170" alt="纳西妲 Q 版立绘" title="Q 版立绘（待机姿势）">
+  <img src="dsh-pet/assets/nhd/nahida-girl.png" width="170" alt="纳西妲娘化立绘" title="娘化立绘（4.5 头身）">
+  <img src="dsh-pet/assets/nhd/chibi-work.png" width="170" alt="伏案工作姿势" title="伏案工作（工作状态联动用）">
+  <img src="dsh-pet/assets/nhd/chibi-sleep.png" width="170" alt="抱叶安睡姿势" title="抱叶安睡（打瞌睡/沉眠用）">
+</p>
+
+<p>
+  <img src="dsh-pet/assets/nhd/preview-idle.png" width="200" alt="待机呼吸动画帧" title="待机呼吸休闲（真透明 WebM 抽帧）">
+  <img src="dsh-pet/assets/nhd/preview-text.png" width="200" alt="文字动作动画帧" title="「是啊，吃什么」文字动作">
+  <img src="dsh-pet/assets/nhd/preview-eat.png" width="200" alt="进食动画帧" title="吃白饭（四叶草饼干）">
+  <img src="dsh-pet/assets/nhd/preview-think.png" width="200" alt="思考动画帧" title="工作状态-思考冒泡">
+</p>
+
+> 透明 WebM 共 106 个（640×360 VP9-alpha，与主宠物同规格），位于 [`dsh-pet/pet/nhd-animation/`](dsh-pet/pet/nhd-animation/)；完整立绘与动画链脚本见 [`dsh-pet/scripts/build-nhd-animations.mjs`](dsh-pet/scripts/build-nhd-animations.mjs)。
+
+### 三种安装方式
+
+| 方式 | 适用场景 | 做法 |
+|---|---|---|
+| **桌宠应用（推荐）** | 只想养宠物 | 从 [Releases](https://github.com/BluesilveEmperor/dsh-nhd/releases) 下载 `dsh-pet-win-x64.zip`，解压双击 `dsh-pet.exe`——首次启动自动安装纳西妲包，已有配置不会被覆盖 |
+| **pet pack** | 已在用 dsh-pet 插件 | 下载 `dsh-pet-nhd-pet-pack.zip` 解压到 `$DSH_HOME/dsh-pet/pet/`；或在 clone 的仓库里跑 `cd dsh-pet && npm run pet:nhd:install`（`--force` 覆盖旧包） |
+| **源码重建** | 想改形象/动作 | `npm run pet:nhd:build`（重新生成配置与 106 个动画），再 `npm run pet:nhd:install` |
+
+### 与上游的能力差异
+
+仅新增内容，不改既有行为：`pet/nhd-config.json` 的 `animations` / `animationWeights` 与主配置 `deepEqual`（有回归测试钉住）；余额、工作状态、碎碎念、点击回应、拖拽、漫游全部可用。人设为纳西妲口吻，工作状态文案也换成了她的说法。以下为上游 dsh-pet 原文档。
+
+---
+
 ## 快速开始（安装插件）
 
 装法取决于你在用哪个 DSH：
