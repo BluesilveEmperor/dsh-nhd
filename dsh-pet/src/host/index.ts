@@ -2679,7 +2679,7 @@ export function apply(ctx: any): void {
   ctx.effect(
     () =>
       ctx.commands.register({
-        name: 'balance',
+        name: 'balance-nhd',
         description: '手动触发桌宠余额显示（立即弹出余额气泡）',
         handler: () => {
           void refreshBalance(true); // manual：命令是用户主动敲的
@@ -2875,7 +2875,7 @@ export function apply(ctx: any): void {
   ctx.effect(
     () =>
       ctx.commands.register({
-        name: 'chat',
+        name: 'chat-nhd',
         description: '与桌宠对话：留空 = 碎碎念一句；输入消息 = 正常对话',
         input: { hint: '[消息]（留空 = 碎碎念）' },
         handler: ({ rawInput }: { rawInput: string }) => {

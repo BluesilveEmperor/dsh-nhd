@@ -123,7 +123,7 @@ export function makeFactory(): (require: (mod: string) => any) => any {
             // 选中 → 提交 /pet <id>（host handler 校验并设置当前桌宠，命令节点回显名字）
             onSelect: async (option: { id: string }, session: { sessionId: string }) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any -- remote 无静态类型
-              await (ctx as any).remote?.commands?.execute(session.sessionId, '/pet ' + option.id, []);
+              await (ctx as any).remote?.commands?.execute(session.sessionId, '/pet-nhd ' + option.id, []);
             },
           },
         });
@@ -145,11 +145,11 @@ export function makeFactory(): (require: (mod: string) => any) => any {
           commandUi,
           new Map<string, CommandFace>([
             // 对话气泡：94 个内置图标里唯一的纯对话气泡
-            ['chat', { label: () => t('cmd.chat'), icon: icons.IconQueueOutlineRegular }],
+            ['chat-nhd', { label: () => t('cmd.chat'), icon: icons.IconQueueOutlineRegular }],
             // 双人形：多只桌宠里挑一只
             ['pet-nhd', { label: () => t('cmd.pet'), icon: icons.IconUsersOutlineRegular }],
             // 仪表盘：额度 / 用量
-            ['balance', { label: () => t('cmd.balance'), icon: icons.IconGaugeOutlineRegular }],
+            ['balance-nhd', { label: () => t('cmd.balance'), icon: icons.IconGaugeOutlineRegular }],
           ]),
         );
       }, 'dsh-pet: command faces');
