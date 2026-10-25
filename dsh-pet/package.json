@@ -1,6 +1,6 @@
 {
   "name": "dsh-pet",
-  "version": "0.3.8",
+  "version": "1.0.0",
   "description": "吃白饭的蓝色大肥鱼，赖在 DeepSeek Harness 里不走了。平时爱玩魔方、爱吃各种零食、偶尔打个盹，闲不住就在桌面上溜达两圈，被你拖来甩去也照旧赖着；你忙起来它跟着忙前忙后，也会帮你打理余额钱包，闲下来爱碎碎念，还乐意陪你唠两句。",
   "icon": "assets/logo.png",
   "keywords": [
@@ -68,6 +68,10 @@
     "assets/memes",
     "assets/config.jsonc",
     "assets/logo.png",
+    "assets/nhd/*.png",
+    "pet",
+    "scripts/build-nhd-animations.mjs",
+    "scripts/install-nhd.mjs",
     "scripts/ensure-electron.mjs",
     "cordis.patch.yml"
   ],
@@ -78,6 +82,8 @@
     "ensure:electron": "node scripts/ensure-electron.mjs",
     "start:desktop": "node scripts/start-desktop.mjs",
     "standalone": "node lib/standalone.js",
+    "pet:nhd:build": "node scripts/build-nhd-config.mjs && node scripts/build-nhd-animations.mjs",
+    "pet:nhd:install": "node scripts/install-nhd.mjs",
     "start:app": "node scripts/start-app.mjs",
     "dist": "node scripts/dist.mjs",
     "dev:mock": "node scripts/dev/mock-server.mjs",

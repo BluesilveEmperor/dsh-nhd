@@ -40,6 +40,7 @@ import { createRequestSecurity } from '../standalone/request-security';
 
 import { installDesktopAuth, type DesktopSession } from './desktop-auth';
 import { startRouter } from './router';
+import { bundledPetTargetDir, seedBundledPets } from './seed-pets';
 
 /**
  * `electron` 由 Electron 运行时提供，**不是本包的依赖**。只声明实际用到的成员：
@@ -114,6 +115,12 @@ async function boot(): Promise<void> {
   };
   // 纯模块（config/chat/whisper）没有 ctx.logger，靠默认出口落盘
   setDefaultLogger(logger);
+
+  // 首次启动：把包内自带的 pet pack（nhd）播种到用户数据目录，让打包应用开箱即有纳西妲
+  const seeded = seedBundledPets(packageRoot, dshHomeDir());
+  if (seeded.installed.length > 0) {
+    log(`已安装自带宠物包：${seeded.installed.join('、')} → ${bundledPetTargetDir(dshHomeDir())}`);
+  }
 
   const routes: RegisteredRoute[] = [];
   let port = 0;

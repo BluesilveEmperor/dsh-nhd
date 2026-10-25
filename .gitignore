@@ -51,3 +51,6 @@ dsh-pet/dist-app/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ── nhd 立绘生成原图（抠图前的原始输出，不入仓库；成品在 assets/nhd/*.png）──
+dsh-pet/assets/nhd/raw/

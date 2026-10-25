@@ -28,6 +28,8 @@ files:
   - assets/memes/**
   - assets/config.jsonc
   - assets/logo.png
+  # 包内自带 pet pack（nhd）：首次启动由 src/app/seed-pets.ts 播种到用户数据目录
+  - pet/**
   - package.json
   - '!node_modules/**'
 
