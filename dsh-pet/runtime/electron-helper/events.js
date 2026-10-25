@@ -102,13 +102,13 @@ PetSprite.prototype.onWorkTick = function onWorkTick(snapshot, tick) {
 };
 
 // ---- 余额事件（自动轮询按 balanceEnabled 门控，手动请求无条件；档位与气泡内容来自 shared） ----
-// manual = 这次刷新是用户主动要的（右键「查看余额」/ `/balance` 命令）：不受开关限制，一律给答复。
+// manual = 这次刷新是用户主动要的（右键「查看余额」/ `/balance-nhd` 命令）：不受开关限制，一律给答复。
 PetSprite.prototype.onBalanceTick = function onBalanceTick(state, tick, manual) {
   if (!this.pet.balanceEnabled && !manual) return; // 自动轮询受开关门控；手动无条件通过（与浏览器一致）
   if (tick === 0 || tick === this.prevTick) return;
   this.prevTick = tick;
   // 占用锁（issue #122 第 4 项）：锁生效时**不看自动余额**（那是宠物自己的行为）；**手动**请求照常
-  // （用户右键「查看余额」/ `/balance` 命令——用户交互优先）。判在 tick 消费之后：占用期间这一拍
+  // （用户右键「查看余额」/ `/balance-nhd` 命令——用户交互优先）。判在 tick 消费之后：占用期间这一拍
   // 就当过去了，解冻后不补播（事件是瞬时的）。
   if (this.frozen && !manual) return;
   this.showBalanceNow(state, manual);
@@ -269,7 +269,7 @@ PetSprite.prototype.toggleBalanceDetail = function toggleBalanceDetail() {
 
 // ---------- 轮询组装（容器统一拉取/触发，与浏览器 PetMulti 同一套路径；boot 成功后调用） ----------
 
-// 余额不可用 → 文字说明气泡（周期轮询与手动 /balance 触发共用这一条路径；判定在 shared，与浏览器同一份）：
+// 余额不可用 → 文字说明气泡（周期轮询与手动 /balance-nhd 触发共用这一条路径；判定在 shared，与浏览器同一份）：
 // explicit=true（手动触发）一律弹——用户问了就该有答复，包括"服务商不支持"这件事；
 // 自动轮询仅在原因（含服务商）变化时弹一次，避免每 30 分钟反复刷同一句话。
 function applyBalanceNotice(state, explicit) {

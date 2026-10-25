@@ -2285,7 +2285,7 @@ components:
         没给 / 空串 / 全空白 → `ok: false` + `reason: pet-required`；
         给了但配置里没有这只宠物 → `ok: false` + `reason: unknown-pet`。
         **没有缺省值**：绝不退到"当前桌宠"或列表第一只（issue #122 第 1 条），
-        所以同一句请求的落点不会随用户 `/pet` 的选择而变。
+        所以同一句请求的落点不会随用户 `/pet-nhd` 的选择而变。
         允许包含点号与中文；**不要**按 `.` 解析由 `/state` 返回的路径键来取它。
       schema:
         type: string
@@ -2607,7 +2607,7 @@ components:
         manual:
           type: boolean
           description: |
-            仅当本次写入是**手动触发**（`POST /balance`、`/balance` 命令、桌面「查看余额」菜单）
+            仅当本次写入是**手动触发**（`POST /balance`、`/balance-nhd` 命令、桌面「查看余额」菜单）
             时出现。消费端据此决定"余额不可用时要不要必弹文字说明"。
         rolling:
           type: number

@@ -223,7 +223,7 @@ export function makePetUI(rt: {
     balance: BalanceState | null;
     balanceTick: number;
     balanceNoticeTick: number;
-    /** 这次余额是不是**用户手动要的**（右键「查看余额」/ `/balance` 命令；host 在叶子里标 manual）。
+    /** 这次余额是不是**用户手动要的**（右键「查看余额」/ `/balance-nhd` 命令；host 在叶子里标 manual）。
      *  手动请求一律给答复：即使本宠物关掉了 balanceEnabled，也要弹气泡（开关只关自动轮询）。 */
     balanceManual: boolean;
     workStatus: WorkStatusSnapshot | null;
@@ -645,7 +645,7 @@ export function makePetUI(rt: {
     );
     // 余额事件：容器拉取成功后递增 balanceTick → 按档位播放事件动画 + 弹气泡。
     // 两条门控分得很清楚：
-    //  - 弹气泡：**手动请求**（右键「查看余额」/ `/balance` 命令，host 在叶子里标了 manual）无条件弹——
+    //  - 弹气泡：**手动请求**（右键「查看余额」/ `/balance-nhd` 命令，host 在叶子里标了 manual）无条件弹——
     //    用户问了就得有答复，哪怕这只宠物关了 balanceEnabled、哪怕服务商没有百分比语义；
     //    自动轮询则要求 balanceEnabled 且有百分比依据。与碎碎念同一条原则：开关只关自动，不关手动。
     //  - 档位动画：始终只属于启用余额的宠物（关掉开关的宠物不该因为被点了一次菜单就突然演一遍）。
@@ -654,7 +654,7 @@ export function makePetUI(rt: {
       if (balanceTick === 0 || balanceTick === prevTickRef.current) return;
       prevTickRef.current = balanceTick;
       // 占用锁：锁生效时**不看自动余额**（那是宠物自己的行为）；**手动**请求照常放行
-      // （用户右键「查看余额」/ `/balance` 命令——用户交互优先，这是既定口径）。
+      // （用户右键「查看余额」/ `/balance-nhd` 命令——用户交互优先，这是既定口径）。
       // 判在 tick 消费**之后**：占用期间这一拍就当过去了，解冻后不补播（事件是瞬时的）。
       if (frozenRef.current && !balanceManual) return;
       if (!balance || !balance.ok) return;

@@ -7,7 +7,7 @@
  *   · `CommandDefinition` / `CommandDescriptor` 没有 icon 字段，且注册时 descriptor 是
  *     **逐字段重建**的（dsh-commands 只挑 definitionId / name / description / input），
  *     多写的字段会被直接丢掉，连 TS 模块增强都传不到前端；
- *   · `CommandDecoration`（本插件 `/pet` 选择框用的那个）只开放「裸调用行为」，
+ *   · `CommandDecoration`（本插件 `/pet-nhd` 选择框用的那个）只开放「裸调用行为」，
  *     没有 label / description / icon；
  *   · 前端 `candidates()` 只对 6 个第一方包（BUILTINS 白名单：goal / plan / feedback /
  *     compact / permission / export）调 `builtinRowFace()` 配面孔。

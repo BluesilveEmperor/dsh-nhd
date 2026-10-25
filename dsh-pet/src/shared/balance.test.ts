@@ -197,7 +197,7 @@ describe('decideBalanceNotice —— 弹不弹文字说明（两端共用同一�
     );
   });
 
-  test('显式请求（/balance、桌面「查看余额」）：一律弹，不受去重影响', () => {
+  test('显式请求（/balance-nhd、桌面「查看余额」）：一律弹，不受去重影响', () => {
     assert.equal(decideBalanceNotice(unsupported, rememberedKey(unsupported), true).show, true);
   });
 });

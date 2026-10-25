@@ -62,7 +62,7 @@ export function makeFactory(): (require: (mod: string) => any) => any {
 
     const name = 'pet-nhd';
     // commandUi 写成服务依赖（与官方 client-ui-permission-presets 的写法一致）：
-    // 让 cordis 等「/」命令入口服务就绪后才 apply 本插件，保证 /pet 装饰必然注册成功。
+    // 让 cordis 等「/」命令入口服务就绪后才 apply 本插件，保证 /pet-nhd 装饰必然注册成功。
     const inject = ['slots', 'locale', 'connection', 'remote', 'remote.commands', 'commandUi'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DSH 注入的 ctx（locale/slots/webServer 等 service 无静态类型）
     function apply(ctx: any) {
@@ -98,14 +98,14 @@ export function makeFactory(): (require: (mod: string) => any) => any {
         'dsh-pet: notifications',
       );
 
-      // /pet 选择框：裸输 /pet 回车或菜单点选时弹出桌宠列表，选中后提交 /pet <id> 由 host 命令落地。
+      // /pet-nhd 选择框：裸输 /pet-nhd 回车或菜单点选时弹出桌宠列表，选中后提交 /pet-nhd <id> 由 host 命令落地。
       // commandUi 已声明为服务依赖（上方 inject）：插件只在「/」命令服务就绪后 apply，
       // 装饰注册有保障；仍保留缺失时的降级提示，防止异常装配下静默失效。
       ctx.effect(() => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DSH 注入服务无静态类型
         const commandUi = (ctx as any).get?.('commandUi');
         if (!commandUi || typeof commandUi.decorate !== 'function') {
-          console.warn('[dsh-pet] 命令选择框不可用：commandUi 服务缺失（/pet 仍可手输 id 或名字）');
+          console.warn('[dsh-pet] 命令选择框不可用：commandUi 服务缺失（/pet-nhd 仍可手输 id 或名字）');
           return () => {};
         }
         return commandUi.decorate({
@@ -120,7 +120,7 @@ export function makeFactory(): (require: (mod: string) => any) => any {
                 label: p.name || p.id,
                 detail: (p.assetRoot && p.assetRoot !== p.id ? p.assetRoot + ' / ' : '') + p.id,
               })),
-            // 选中 → 提交 /pet <id>（host handler 校验并设置当前桌宠，命令节点回显名字）
+            // 选中 → 提交 /pet-nhd <id>（host handler 校验并设置当前桌宠，命令节点回显名字）
             onSelect: async (option: { id: string }, session: { sessionId: string }) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any -- remote 无静态类型
               await (ctx as any).remote?.commands?.execute(session.sessionId, '/pet-nhd ' + option.id, []);
@@ -129,7 +129,7 @@ export function makeFactory(): (require: (mod: string) => any) => any {
         });
       }, 'dsh-pet: /pet picker');
 
-      // /chat /pet /balance 在「/」菜单里的行标题与图标。
+      // /chat-nhd /pet-nhd /balance-nhd 在「/」菜单里的行标题与图标。
       // DSH 没有给宿主命令配图标的官方入口，这里包装 commandUi.candidates 补上 label + icon；
       // 三个命令的宿主侧能力（命令日志 / 手输参数 / input.hint / SDK 可见性）全部不受影响。
       // 依据与降级策略见 command-faces.ts 的模块注释。

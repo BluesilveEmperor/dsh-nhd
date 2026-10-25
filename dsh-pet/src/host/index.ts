@@ -174,7 +174,7 @@ import {
 
 /** 插件行 id（与 cordis.patch.yml 一致） */
 export const name = 'pet-nhd';
-/** 需要注入的服务：webServer（路由）+ agentDefaultModel（当前服务商）+ credentials（凭证）+ llm（对话模型调用）+ commands（/balance 斜杠命令）+ connection（桌面 Helper「打开网站」用的已鉴权站点 URL） */
+/** 需要注入的服务：webServer（路由）+ agentDefaultModel（当前服务商）+ credentials（凭证）+ llm（对话模型调用）+ commands（/balance-nhd 斜杠命令）+ connection（桌面 Helper「打开网站」用的已鉴权站点 URL） */
 export const inject = ['webServer', 'agentDefaultModel', 'credentials', 'llm', 'commands', 'connection'];
 
 /** 本包目录：宿主构建产物位于 lib/，其上一级即包根。 */
@@ -309,7 +309,7 @@ function readBody(req: IncomingMessage): Promise<string> {
 // 这里不再有 host 侧拷贝——文件宠物与主宠物一样，统一从 readAllConfig 的成品读取。
 // ---------------------------------------------------------------------------
 
-/** 宿主插件主体：注册 `/dsh-pet-nhd-7340` 前缀路由 + 斜杠命令（/balance /pet /chat）。 */
+/** 宿主插件主体：注册 `/dsh-pet-nhd-7340` 前缀路由 + 斜杠命令（/balance-nhd /pet-nhd /chat-nhd）。 */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DSH 注入的 ctx（webServer/locale 等 service 无静态类型）
 export function apply(ctx: any): void {
   // 用户数据根：配置与用户素材统一收敛于此（扩展包按 <插件id> 各自建目录）
@@ -593,7 +593,7 @@ export function apply(ctx: any): void {
    * 收紧前这四条是 `get('pet') || resolveActivePetId() || 'main'`：缺省会落到"当前桌宠"
    * = **有效宠物列表第一只**（`/whisper`、`/chat` 更彻底——`?? ''` 直接空串：人设按 main 条目取、
    * 生成结果写进没人消费的 `pets[""].say`，还回 ok:true——钱花了、话丢了、调用方以为成功）。
-   * 落点随用户 /pet 操作而变、失败也不报，第三方无从预期，故整条缺省链已删除：
+   * 落点随用户 /pet-nhd 操作而变、失败也不报，第三方无从预期，故整条缺省链已删除：
    * pet 与 `/pet-display` 的 `id` 一样是必填项。
    *
    * `cfg` 传**惰性读取**：pet 空串时不必碰磁盘（与 /broadcast 的 text/duration 同一处境，
@@ -758,7 +758,7 @@ export function apply(ctx: any): void {
       }, NOTIFY_ACTIVITY_DELAY_MS),
     );
   };
-  // 命令「当前桌宠」（/pet 选择、/chat 使用）：全局单值不分会话；进程内内存，重启回默认第一只
+  // 命令「当前桌宠」（/pet-nhd 选择、/chat-nhd 使用）：全局单值不分会话；进程内内存，重启回默认第一只
   let activePetId = '';
   // 碎碎念周期调度的「上次生成时刻」（按宠物）：调度拍据此判断到没到点。
   // 改造前这份节流靠 whisperCache（缓存 + ts 比较），现在"该不该生成"由调度侧决定、
@@ -892,7 +892,7 @@ export function apply(ctx: any): void {
   };
 
   /** 与某只宠物对话：截取最近记忆 → 生成回复 → 写入记忆 → 把回复写进 S 的 pets.<id>.say。
-   *  供 POST /chat（动作端点）与 /chat 命令共用同一条路径（锁内读写，防两端交错写盘）。
+   *  供 POST /chat（动作端点）与 /chat-nhd 命令共用同一条路径（锁内读写，防两端交错写盘）。
    *  配图（chatImageEnabled 开启时）：把表情包清单交给模型按语境选一张，命中池内才随回复写回。
    *  成功**带回回复文本**（与同时写进叶子的那份完全相同）——调用方拿到就不必再拉一拍 /state。 */
   const chatWithPet = async (
@@ -974,7 +974,7 @@ export function apply(ctx: any): void {
    * 失败也写进 S（reason 区分 unsupported / credential-missing / fetch-error）——余额不可用要弹
    * 文字说明气泡，不能静默；意外异常同样落成 fetch-error，不吞。
    *
-   * @param manual 这次刷新是不是"用户要的"（/balance 命令、桌面「查看余额」菜单）。
+   * @param manual 这次刷新是不是"用户要的"（/balance-nhd 命令、桌面「查看余额」菜单）。
    *   标记随数据一起写进叶子：只有 host 知道是谁要的，前端据此决定余额不可用时要不要**必弹**
    *   文字说明（decideBalanceNotice 的 explicit；周期刷新则只在原因变化时弹一次，免得反复刷屏）。
    */
@@ -1045,7 +1045,7 @@ export function apply(ctx: any): void {
     }
   };
 
-  /** 当前交互桌宠 id：/pet 已选且仍存在 → 该宠物；未选/已失效 → 有效宠物列表第一只（进程内，重启回默认） */
+  /** 当前交互桌宠 id：/pet-nhd 已选且仍存在 → 该宠物；未选/已失效 → 有效宠物列表第一只（进程内，重启回默认） */
   const resolveActivePetId = (): string => {
     try {
       const eff = effectivePetList();
@@ -2673,7 +2673,7 @@ export function apply(ctx: any): void {
     };
   }, 'dsh-pet: notify frames');
 
-  // /balance 斜杠命令：触发一次余额刷新（写 S → 前端 1s 轮询看到后弹气泡）。
+  // /balance-nhd 斜杠命令：触发一次余额刷新（写 S → 前端 1s 轮询看到后弹气泡）。
   // fire-and-forget：回执不等外部 API（查询可能要几秒），立刻回；结果一律从 S 看
   // （成功播档位动画 + 余额气泡；服务商不支持 / 缺凭证 / 抓取失败则弹文字说明气泡，绝不静默）。
   ctx.effect(
@@ -2814,14 +2814,14 @@ export function apply(ctx: any): void {
     };
   }, 'dsh-pet: whisper poll');
 
-  // /pet 斜杠命令：选择「当前桌宠」（/chat 对话的目标）。浏览器端另有 commandUi 装饰的选择框
-  // （裸输 /pet 回车或菜单点选时弹出，选中后提交 /pet <id> 走同一 handler）；手输参数认 id 或名字
+  // /pet-nhd 斜杠命令：选择「当前桌宠」（/chat-nhd 对话的目标）。浏览器端另有 commandUi 装饰的选择框
+  // （裸输 /pet-nhd 回车或菜单点选时弹出，选中后提交 /pet-nhd <id> 走同一 handler）；手输参数认 id 或名字
   // （name 可重复：唯一命中才认，重名报错列出候选 id）。
   ctx.effect(
     () =>
       ctx.commands.register({
         name: 'pet-nhd',
-        description: '选择桌宠（/chat 对话的目标；支持选择框或手输 id/名字）',
+        description: '选择桌宠（/chat-nhd 对话的目标；支持选择框或手输 id/名字）',
         input: { hint: '[宠物 id 或名字]（留空查看当前）' },
         handler: ({ rawInput }: { rawInput: string }) => {
           const arg = rawInput.trim();
@@ -2862,16 +2862,16 @@ export function apply(ctx: any): void {
                 '），请用 id 指定',
             };
           }
-          return { kind: 'error', text: '找不到桌宠「' + arg + '」（id 或名字都行；/pet 回车可打开选择框）' };
+          return { kind: 'error', text: '找不到桌宠「' + arg + '」（id 或名字都行；/pet-nhd 回车可打开选择框）' };
         },
       }),
     'dsh-pet: /pet command',
   );
 
-  // /chat 斜杠命令：与当前桌宠对话。无参数 = 碎碎念一句（手动语义：不受 whisperEnabled 门控，
+  // /chat-nhd 斜杠命令：与当前桌宠对话。无参数 = 碎碎念一句（手动语义：不受 whisperEnabled 门控，
   // 那个字段只关自动周期）；有参数 = 正常对话（走 chatWithPet 同一条路径：记忆 + 人设 + 写盘）。
   // 两个分支都是 **fire-and-forget**：回执不等模型（生成要几秒），文本一律写进 S 的
-  // pets.<id>.say，前端 1s 轮询 /state 后弹气泡——与 /balance 命令同一套语义（回执不带数据）。
+  // pets.<id>.say，前端 1s 轮询 /state 后弹气泡——与 /balance-nhd 命令同一套语义（回执不带数据）。
   ctx.effect(
     () =>
       ctx.commands.register({

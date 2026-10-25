@@ -83,9 +83,9 @@ function captureWarn(): { messages: string[]; restore: () => void } {
 
 describe('installCommandFaces —— 包装 commandUi.candidates', () => {
   test('装补丁后，DSH 的闭包取到的行带上了 label 与 icon', async () => {
-    const ui = new FakeCommandUi([{ name: 'chat' }, { name: 'other' }]);
+    const ui = new FakeCommandUi([{ name: 'chat-nhd' }, { name: 'other' }]);
     const source = sourceOf(ui);
-    const dispose = installCommandFaces(ui, new Map([['chat', face('对话')]]));
+    const dispose = installCommandFaces(ui, new Map([['chat-nhd', face('对话')]]));
 
     const rows = await rowsOf(source);
     assert.equal(rows[0].label, '对话');
@@ -113,12 +113,12 @@ describe('installCommandFaces —— 包装 commandUi.candidates', () => {
   });
 
   test('label 每次候选轮询现取 —— 语言切换在下一轮菜单打开时生效', async () => {
-    const ui = new FakeCommandUi([{ name: 'chat' }]);
+    const ui = new FakeCommandUi([{ name: 'chat-nhd' }]);
     const source = sourceOf(ui);
     let lang = 'zh';
     const dispose = installCommandFaces(
       ui,
-      new Map([['chat', { label: () => (lang === 'zh' ? '对话' : 'Chat'), icon: ICON }]]),
+      new Map([['chat-nhd', { label: () => (lang === 'zh' ? '对话' : 'Chat'), icon: ICON }]]),
     );
 
     assert.equal((await rowsOf(source))[0].label, '对话');
@@ -130,9 +130,9 @@ describe('installCommandFaces —— 包装 commandUi.candidates', () => {
 
   test('DSH 自己已经给了 icon 的行不被覆盖（将来官方支持后自动让位）', async () => {
     const official = () => null;
-    const ui = new FakeCommandUi([{ name: 'chat', icon: official, label: '官方标题' }]);
+    const ui = new FakeCommandUi([{ name: 'chat-nhd', icon: official, label: '官方标题' }]);
     const source = sourceOf(ui);
-    const dispose = installCommandFaces(ui, new Map([['chat', face('对话')]]));
+    const dispose = installCommandFaces(ui, new Map([['chat-nhd', face('对话')]]));
 
     const row = (await rowsOf(source))[0];
     assert.equal(row.icon, official);
@@ -142,7 +142,7 @@ describe('installCommandFaces —— 包装 commandUi.candidates', () => {
   });
 
   test('映射逻辑抛错时退回原始行（菜单不会坏）', async () => {
-    const ui = new FakeCommandUi([{ name: 'chat', description: '来自宿主' }]);
+    const ui = new FakeCommandUi([{ name: 'chat-nhd', description: '来自宿主' }]);
     const source = sourceOf(ui);
     const boom: CommandFace = {
       label: () => {
@@ -151,11 +151,11 @@ describe('installCommandFaces —— 包装 commandUi.candidates', () => {
       icon: ICON,
     };
     const warn = captureWarn();
-    const dispose = installCommandFaces(ui, new Map([['chat', boom]]));
+    const dispose = installCommandFaces(ui, new Map([['chat-nhd', boom]]));
 
     const rows = await rowsOf(source);
     assert.equal(rows.length, 1);
-    assert.equal(rows[0].name, 'chat');
+    assert.equal(rows[0].name, 'chat-nhd');
     assert.equal(rows[0].label, undefined);
     assert.equal(rows[0].description, '来自宿主');
     // 降级必须留痕，否则「静默失效」没人守
@@ -173,7 +173,7 @@ describe('installCommandFaces —— 包装 commandUi.candidates', () => {
       throw new Error('DSH 自己的错');
     };
     const source = sourceOf(ui);
-    installCommandFaces(ui, new Map([['chat', face('对话')]]));
+    installCommandFaces(ui, new Map([['chat-nhd', face('对话')]]));
 
     await assert.rejects(() => source.candidates({}, {}), /DSH 自己的错/);
   });
@@ -182,15 +182,15 @@ describe('installCommandFaces —— 包装 commandUi.candidates', () => {
     const ui = new FakeCommandUi([]);
     (ui as unknown as { candidates: () => Promise<unknown> }).candidates = async () => 'nope';
     const source = sourceOf(ui);
-    installCommandFaces(ui, new Map([['chat', face('对话')]]));
+    installCommandFaces(ui, new Map([['chat-nhd', face('对话')]]));
 
     assert.equal(await source.candidates({}, {}), 'nope');
   });
 
   test('数组里的非对象元素原样放行', async () => {
-    const ui = new FakeCommandUi([null, 42, 'x', { name: 'chat' }]);
+    const ui = new FakeCommandUi([null, 42, 'x', { name: 'chat-nhd' }]);
     const source = sourceOf(ui);
-    const dispose = installCommandFaces(ui, new Map([['chat', face('对话')]]));
+    const dispose = installCommandFaces(ui, new Map([['chat-nhd', face('对话')]]));
 
     const rows = await rowsOf(source);
     assert.deepEqual(rows.slice(0, 3), [null, 42, 'x']);
@@ -202,7 +202,7 @@ describe('installCommandFaces —— 包装 commandUi.candidates', () => {
   test('candidates 缺失 → 完全不装，只告警', () => {
     const ui: CommandUiLike = {};
     const warn = captureWarn();
-    const dispose = installCommandFaces(ui, new Map([['chat', face('对话')]]));
+    const dispose = installCommandFaces(ui, new Map([['chat-nhd', face('对话')]]));
 
     assert.equal(ui.candidates, undefined);
     assert.equal(typeof dispose, 'function');
@@ -214,9 +214,9 @@ describe('installCommandFaces —— 包装 commandUi.candidates', () => {
   });
 
   test('dispose 还原原方法（闭包重新取到未加工的行）', async () => {
-    const ui = new FakeCommandUi([{ name: 'chat' }]);
+    const ui = new FakeCommandUi([{ name: 'chat-nhd' }]);
     const source = sourceOf(ui);
-    const dispose = installCommandFaces(ui, new Map([['chat', face('对话')]]));
+    const dispose = installCommandFaces(ui, new Map([['chat-nhd', face('对话')]]));
     assert.equal((await rowsOf(source))[0].label, '对话');
 
     dispose();
@@ -224,10 +224,10 @@ describe('installCommandFaces —— 包装 commandUi.candidates', () => {
   });
 
   test('dispose 只还原自己那一份 —— 后来者的包装不被抹掉', () => {
-    const ui = new FakeCommandUi([{ name: 'chat' }]);
-    const first = installCommandFaces(ui, new Map([['chat', face('第一层')]]));
+    const ui = new FakeCommandUi([{ name: 'chat-nhd' }]);
+    const first = installCommandFaces(ui, new Map([['chat-nhd', face('第一层')]]));
     const patchedFirst = ui.candidates;
-    const second = installCommandFaces(ui, new Map([['chat', face('第二层')]]));
+    const second = installCommandFaces(ui, new Map([['chat-nhd', face('第二层')]]));
     const patchedSecond = ui.candidates;
 
     // 第一层先 dispose：此时实例上是第二层，不该被抹成原型方法
@@ -241,9 +241,9 @@ describe('installCommandFaces —— 包装 commandUi.candidates', () => {
   });
 
   test('两层包装叠加时，外层不覆盖内层已设的面孔（icon 短路同样生效）', async () => {
-    const ui = new FakeCommandUi([{ name: 'chat' }]);
-    const first = installCommandFaces(ui, new Map([['chat', face('第一层')]]));
-    const second = installCommandFaces(ui, new Map([['chat', face('第二层')]]));
+    const ui = new FakeCommandUi([{ name: 'chat-nhd' }]);
+    const first = installCommandFaces(ui, new Map([['chat-nhd', face('第一层')]]));
+    const second = installCommandFaces(ui, new Map([['chat-nhd', face('第二层')]]));
 
     // 内层先跑，行上已有 icon → 外层的短路规则让它原样放行，于是标题保持内层的
     assert.equal((await rowsOf(sourceOf(ui)))[0].label, '第一层');

@@ -159,7 +159,7 @@ export function decideAnim(args: {
 
   // pet **必填**且必须真实存在（与 /broadcast、/position 同一口径）。收紧前这里是
   // `requested || active || 'main'`——`active` 是"当前桌宠" = **有效宠物列表第一只**，
-  // 落点随用户 /pet 操作而变，第三方无从预期，所以整条缺省链已删除（issue #122 第 1 条）。
+  // 落点随用户 /pet-nhd 操作而变，第三方无从预期，所以整条缺省链已删除（issue #122 第 1 条）。
   const petId = String(requested ?? '').trim();
   if (!petId) return { ok: false, reason: 'pet-required', message: 'pet 必填：要指定操作哪只桌宠' };
   // **一次查找同时给出"存在性"与"所属条目"**（动画池按条目取）：校验与取值用同一份结果，

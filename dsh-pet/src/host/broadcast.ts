@@ -86,7 +86,7 @@ export function normalizeBroadcastAnim(anim: unknown): boolean {
  *
  * 两种失败分开报（issue #122 第 1 条「绝不默认退到列表第一只」）：没给 → `pet-required`；
  * 给了但配置里没有 → `unknown-pet`。收紧前这里是 `requested || active || 'main'`——`active`
- * 是"当前桌宠" = **有效宠物列表第一只**，落点随用户 /pet 操作而变，第三方无从预期，故整条删除。
+ * 是"当前桌宠" = **有效宠物列表第一只**，落点随用户 /pet-nhd 操作而变，第三方无从预期，故整条删除。
  */
 function resolvePetId(
   cfg: Record<string, Record<string, unknown>>,
