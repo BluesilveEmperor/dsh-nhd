@@ -1,0 +1,87 @@
+# ============================================================================
+# npm 发版流水线 —— 把 dsh-pet-nhd 插件包发布到 npm registry
+#
+# 发布成功后，用户即可「插件式安装」：
+#   - 桌面应用：插件管理页安装框填 dsh-pet-nhd
+#   - CLI：dsh plugin --profile web add dsh-pet-nhd
+#
+# 触发：
+#   ① push tag v* —— 与 release-app（桌面 zip）同 tag 触发，一次发版两件套
+#   ② workflow_dispatch —— 手动输入 tag 重发
+#
+# 构建：npm publish 自动触发 prepack 链（build = prepare.js 全量构建 lib +
+#       桌面共享核心 + 类型声明 + files 收敛 → typecheck/lint/prepack-check）。
+# 前置 secret：NPM_TOKEN（npm 账号的 Automation token，仓库 Settings → Secrets 配置）
+# ============================================================================
+
+name: npm-publish
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "要发布的 tag（例如 v1.0.0）"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-publish-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  TAG: ${{ github.event.inputs.tag || github.ref_name }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        # 包在 dsh-pet/ 子目录：所有 run 步骤默认在那里执行
+        working-directory: dsh-pet
+
+    steps:
+      - name: 检出目标 tag 的代码
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - name: 安装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 校验版本一致性
+        run: |
+          TAG="${TAG#v}"
+          VERSION=$(node -p "require('./package.json').version")
+          if [ "$TAG" != "$VERSION" ]; then
+            echo "tag v$TAG 与 package.json version $VERSION 不一致：先对齐版本号再打 tag。"
+            exit 1
+          fi
+          echo "版本一致：$VERSION"
+
+      - name: 发布到 npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish
+
+      - name: 记录发布结果
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "已发布 dsh-pet-nhd@$VERSION → https://www.npmjs.com/package/dsh-pet-nhd"

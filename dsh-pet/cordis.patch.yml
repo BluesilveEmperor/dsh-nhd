@@ -14,12 +14,12 @@
 #   - 插件行那一行（"id: 值"）绝不能写行尾注释：商城预检（check-plugin-submission.mjs）
 #     用正则抓该行的值并要求其后直接换行，行尾注释会让它抓不到 entry ID，
 #     整份提交被判 SUBMISSION_ENTRY_MISSING（与 id 叫什么名字无关）
-#   - name: 'dsh-pet' 会解析包入口 lib/index.js（宿主半侧）
+#   - name: 'dsh-pet-nhd' 会解析包入口 lib/index.js（宿主半侧）
 #   - 因为 package.json 声明了 dsh.client，DSH 的模块系统同时会把
-#     这个包扫描为"浏览器插件"，提供 /plugins/dsh-pet/client.js 给页面
+#     这个包扫描为"浏览器插件"，提供 /plugins/dsh-pet-nhd/client.js 给页面
 #
 # ============================================================================
 
 - insert:
-    - id: dsh-pet
-      name: 'dsh-pet'             # 模块名：解析到 lib/index.js
+    - id: dsh-pet-nhd
+      name: 'dsh-pet-nhd'          # 模块名：解析到 lib/index.js（bundle id 必须与包名一致）
