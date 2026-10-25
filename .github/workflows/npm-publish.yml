@@ -79,7 +79,12 @@ jobs:
       - name: 发布到 npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "跳过 npm publish：仓库未配置 NPM_TOKEN secret（Settings → Secrets and variables → Actions）。"
+            exit 0
+          fi
+          npm publish
 
       - name: 记录发布结果
         run: |
