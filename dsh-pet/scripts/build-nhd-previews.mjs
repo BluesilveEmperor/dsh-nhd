@@ -21,9 +21,19 @@ function extractFrame(name) {
   const output = join(previewDir, `${name}.png`);
   if (existsSync(output)) return output;
   const args = [
-    '-hide_banner', '-loglevel', 'error', '-y',
-    '-ss', SEEK_SEC, '-c:v', 'libvpx-vp9', '-i', join(animationDir, `${name}.webm`),
-    '-frames:v', '1', output,
+    '-hide_banner',
+    '-loglevel',
+    'error',
+    '-y',
+    '-ss',
+    SEEK_SEC,
+    '-c:v',
+    'libvpx-vp9',
+    '-i',
+    join(animationDir, `${name}.webm`),
+    '-frames:v',
+    '1',
+    output,
   ];
   const result = spawnSync('ffmpeg', args, { stdio: 'inherit' });
   if (result.error) throw result.error;
@@ -50,7 +60,10 @@ const groups = [
   { title: '**拖拽**', names: a.drag },
   { title: '**余额事件**（按余额已用百分比分档，满格 → 告急 → 耗尽）', names: a.events.balance },
   { title: '**碎碎念说话动画**（碎碎念 / 对话回复触发，随机抽 1 段）', names: a.events.whisper },
-  { title: '**工作状态动画**（跟随 DSH 会话事件，六档：思考 / 工作 / 整理 / 等待 / 成功 / 出错）', names: a.events.workStatus },
+  {
+    title: '**工作状态动画**（跟随 DSH 会话事件，六档：思考 / 工作 / 整理 / 等待 / 成功 / 出错）',
+    names: a.events.workStatus,
+  },
 ];
 
 const allNames = groups.flatMap((g) => g.names);

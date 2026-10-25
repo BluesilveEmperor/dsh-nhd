@@ -355,7 +355,11 @@ describe('/broadcast —— 第三方投喂（POST 写入端点，issue #76）',
     // 与本文件里"配置不可达"这一前提配合：若 duration 校验被放到读配置之后，
     // 这几条会变成 generate-error——断言 reason 就同时钉住了**短路顺序**。
     for (const duration of [-1, -0.5, '3000', {}, [], true]) {
-      const r = await call('/dsh-pet-nhd-7340/broadcast?pet=main', 'POST', JSON.stringify({ text: '该喝水了', duration }));
+      const r = await call(
+        '/dsh-pet-nhd-7340/broadcast?pet=main',
+        'POST',
+        JSON.stringify({ text: '该喝水了', duration }),
+      );
       assert.equal(r.status, 200, `duration=${JSON.stringify(duration)}`);
       assert.equal(
         (JSON.parse(r.body) as { reason: string }).reason,
@@ -513,7 +517,9 @@ describe('thumb 路由 —— petId 不得当路径片段（PR #53 的不变式�
 
 describe('pic/memes 路由 —— 表情包素材归属（与 thumb 同一套语义）', () => {
   test('种类独占：pet/<素材根>-memes/ 里的图按 <素材根>/<名> 取到（中文素材根照常）', async () => {
-    const r = await call(`/dsh-pet-nhd-7340/pic/memes/${encodeURIComponent(CN_PET)}/${encodeURIComponent('自家图')}.png`);
+    const r = await call(
+      `/dsh-pet-nhd-7340/pic/memes/${encodeURIComponent(CN_PET)}/${encodeURIComponent('自家图')}.png`,
+    );
     assert.equal(r.status, 200);
     assert.equal(r.body, OWN_PIC);
   });
@@ -534,7 +540,9 @@ describe('pic/memes 路由 —— 表情包素材归属（与 thumb 同一套语
 
   test('独占就是独占：种类自己的目录里没有 → 404，绝不回落到用户/包内目录', async () => {
     // 共用图 只存在于用户目录；该种类有独立的 -memes 目录 → 只查它，不混用
-    const r = await call(`/dsh-pet-nhd-7340/pic/memes/${encodeURIComponent(CN_PET)}/${encodeURIComponent('共用图')}.png`);
+    const r = await call(
+      `/dsh-pet-nhd-7340/pic/memes/${encodeURIComponent(CN_PET)}/${encodeURIComponent('共用图')}.png`,
+    );
     assert.equal(r.status, 404);
     assert.equal(r.body.includes(SHARED_PIC), false, '独占目录命中时不得回落到共享目录');
   });
@@ -752,10 +760,18 @@ describe('/work-status —— 外部写入工作状态', () => {
     const keep = await call('/dsh-pet-nhd-7340/work-status', 'POST', JSON.stringify({ state: 'result' }));
     assert.deepEqual(JSON.parse(keep.body), { state: 'result', task: '保留我' });
 
-    const nulled = await call('/dsh-pet-nhd-7340/work-status', 'POST', JSON.stringify({ state: 'working', task: null }));
+    const nulled = await call(
+      '/dsh-pet-nhd-7340/work-status',
+      'POST',
+      JSON.stringify({ state: 'working', task: null }),
+    );
     assert.deepEqual(JSON.parse(nulled.body), { state: 'working', task: null });
 
-    const emptied = await call('/dsh-pet-nhd-7340/work-status', 'POST', JSON.stringify({ state: 'working', task: '   ' }));
+    const emptied = await call(
+      '/dsh-pet-nhd-7340/work-status',
+      'POST',
+      JSON.stringify({ state: 'working', task: '   ' }),
+    );
     assert.deepEqual(JSON.parse(emptied.body), { state: 'working', task: null });
   });
 

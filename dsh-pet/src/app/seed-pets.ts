@@ -44,7 +44,11 @@ export function seedBundledPets(packageRoot: string, home: string): BundledPetPa
     const animationSource = join(sourceDir, `${stem}-animation`);
     if (!existsSync(animationSource)) continue; // 缺素材目录：按 host 规则该条目加载会报错，直接不装
     copyFileSync(join(sourceDir, entry.name), targetConfig);
-    cpSync(animationSource, join(targetDir, `${stem}-animation`), { recursive: true, errorOnExist: true, force: false });
+    cpSync(animationSource, join(targetDir, `${stem}-animation`), {
+      recursive: true,
+      errorOnExist: true,
+      force: false,
+    });
     result.installed.push(stem);
   }
   return result;

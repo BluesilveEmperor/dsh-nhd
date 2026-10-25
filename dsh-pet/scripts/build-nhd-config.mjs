@@ -73,4 +73,6 @@ const nhd = {
 
 const target = join(packageRoot, 'pet', 'nhd-config.json');
 writeFileSync(target, JSON.stringify(nhd, null, 2) + '\n');
-console.log(`Wrote ${target} (animations aligned with main: ${main.animations.categories.reduce((s, c) => s + c.actions.length, 0)} category actions)`);
+console.log(
+  `Wrote ${target} (animations aligned with main: ${main.animations.categories.reduce((s, c) => s + c.actions.length, 0)} category actions)`,
+);

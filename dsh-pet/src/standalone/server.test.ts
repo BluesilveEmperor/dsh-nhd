@@ -185,7 +185,10 @@ describe('createRequestListener —— 异常收口', () => {
         throw new Error('读盘失败');
       },
     };
-    const res = call(createRequestListener({ routes: [exploding], logger: silent, security }), '/dsh-pet-nhd-7340/config');
+    const res = call(
+      createRequestListener({ routes: [exploding], logger: silent, security }),
+      '/dsh-pet-nhd-7340/config',
+    );
     assert.equal(res.status, 500);
     assert.deepEqual(JSON.parse(res.body()), { error: '本机服务暂时无法处理请求' });
   });
@@ -198,7 +201,10 @@ describe('createRequestListener —— 异常收口', () => {
         throw new Error('异步失败');
       },
     };
-    const res = call(createRequestListener({ routes: [exploding], logger: silent, security }), '/dsh-pet-nhd-7340/config');
+    const res = call(
+      createRequestListener({ routes: [exploding], logger: silent, security }),
+      '/dsh-pet-nhd-7340/config',
+    );
     await new Promise((accept) => setImmediate(accept));
     assert.equal(res.status, 500);
     assert.match(res.body(), /本机服务暂时无法处理请求/);
@@ -323,7 +329,9 @@ describe('HTTP boundary protects every route and settings', () => {
       });
       assert.equal(wrongHost, 403);
       assert.equal(calls, 0);
-      const response = await fetch(base + '/dsh-pet-nhd-7340/config', { headers: { 'X-DSH-Pet-Token': security.token } });
+      const response = await fetch(base + '/dsh-pet-nhd-7340/config', {
+        headers: { 'X-DSH-Pet-Token': security.token },
+      });
       assert.equal(response.status, 200);
       assert.equal(response.headers.get('access-control-allow-origin'), null);
       assert.equal(response.headers.get('access-control-allow-headers'), null);

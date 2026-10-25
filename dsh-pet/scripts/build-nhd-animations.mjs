@@ -21,19 +21,50 @@ const fontFile = fontPath.replaceAll('\\', '/').replace(':', '\\:');
 
 /** 动画名 → 立绘与动作配方。配方键：pose 立绘、rot 旋转表达式、y 垂直表达式。 */
 const RECIPES = {
-  breathe: (s) => ({ rot: `${r(0.012 * s.amp)}*sin(2*PI*t/${f(4 / s.speed)})`, y: `(oh-ih)-10+${f(3 * s.amp)}*sin(2*PI*t/${f(3 / s.speed)})` }),
-  sway: (s) => ({ rot: `${r(0.025 * s.amp)}*sin(2*PI*t/${f(3.5 / s.speed)})`, y: `(oh-ih)-10+${f(2 * s.amp)}*sin(2*PI*t/${f(4 / s.speed)})` }),
-  jump: (s) => ({ rot: `${r(0.02 * s.amp)}*sin(2*PI*t*${f(1.5 * s.speed)})`, y: `(oh-ih)-10-${f(18 * s.amp)}*abs(sin(PI*t*${f(s.speed)}))` }),
-  swing: (s) => ({ rot: `${r(0.055 * s.amp)}*sin(2*PI*t/${f(3 / s.speed)})`, y: `(oh-ih)-18+${f(5 * s.amp)}*sin(2*PI*t/${f(3 / s.speed)})` }),
-  walk: (s) => ({ rot: `${r(0.025 * s.amp)}*sin(2*PI*t*${f(2 * s.speed)})`, y: `(oh-ih)-10-${f(8 * s.amp)}*abs(sin(2*PI*t*${f(2 * s.speed)}))` }),
-  munch: (s) => ({ rot: `${r(0.012 * s.amp)}*sin(2*PI*t*${f(2.5 * s.speed)})`, y: `(oh-ih)-10+${f(3 * s.amp)}*abs(sin(2*PI*t*${f(2.5 * s.speed)}))` }),
-  doze: (s) => ({ rot: `${r(0.008 * s.amp)}*sin(2*PI*t/${f(6 / s.speed)})`, y: `(oh-ih)-8+${f(2 * s.amp)}*sin(2*PI*t/${f(5 / s.speed)})` }),
-  shake: (s) => ({ rot: `${r(0.01 * s.amp)}*sin(2*PI*t*${f(4 * s.speed)})`, y: `(oh-ih)-10+${f(2 * s.amp)}*sin(2*PI*t*${f(4 * s.speed)})` }),
-  droop: (s) => ({ rot: `${r(0.008 * s.amp)}*sin(2*PI*t/${f(5 / s.speed)})`, y: `(oh-ih)-6+${f(1.5 * s.amp)}*sin(2*PI*t/${f(5 / s.speed)})` }),
+  breathe: (s) => ({
+    rot: `${r(0.012 * s.amp)}*sin(2*PI*t/${f(4 / s.speed)})`,
+    y: `(oh-ih)-10+${f(3 * s.amp)}*sin(2*PI*t/${f(3 / s.speed)})`,
+  }),
+  sway: (s) => ({
+    rot: `${r(0.025 * s.amp)}*sin(2*PI*t/${f(3.5 / s.speed)})`,
+    y: `(oh-ih)-10+${f(2 * s.amp)}*sin(2*PI*t/${f(4 / s.speed)})`,
+  }),
+  jump: (s) => ({
+    rot: `${r(0.02 * s.amp)}*sin(2*PI*t*${f(1.5 * s.speed)})`,
+    y: `(oh-ih)-10-${f(18 * s.amp)}*abs(sin(PI*t*${f(s.speed)}))`,
+  }),
+  swing: (s) => ({
+    rot: `${r(0.055 * s.amp)}*sin(2*PI*t/${f(3 / s.speed)})`,
+    y: `(oh-ih)-18+${f(5 * s.amp)}*sin(2*PI*t/${f(3 / s.speed)})`,
+  }),
+  walk: (s) => ({
+    rot: `${r(0.025 * s.amp)}*sin(2*PI*t*${f(2 * s.speed)})`,
+    y: `(oh-ih)-10-${f(8 * s.amp)}*abs(sin(2*PI*t*${f(2 * s.speed)}))`,
+  }),
+  munch: (s) => ({
+    rot: `${r(0.012 * s.amp)}*sin(2*PI*t*${f(2.5 * s.speed)})`,
+    y: `(oh-ih)-10+${f(3 * s.amp)}*abs(sin(2*PI*t*${f(2.5 * s.speed)}))`,
+  }),
+  doze: (s) => ({
+    rot: `${r(0.008 * s.amp)}*sin(2*PI*t/${f(6 / s.speed)})`,
+    y: `(oh-ih)-8+${f(2 * s.amp)}*sin(2*PI*t/${f(5 / s.speed)})`,
+  }),
+  shake: (s) => ({
+    rot: `${r(0.01 * s.amp)}*sin(2*PI*t*${f(4 * s.speed)})`,
+    y: `(oh-ih)-10+${f(2 * s.amp)}*sin(2*PI*t*${f(4 * s.speed)})`,
+  }),
+  droop: (s) => ({
+    rot: `${r(0.008 * s.amp)}*sin(2*PI*t/${f(5 / s.speed)})`,
+    y: `(oh-ih)-6+${f(1.5 * s.amp)}*sin(2*PI*t/${f(5 / s.speed)})`,
+  }),
 };
 
-function r(v) { return v.toFixed(4); }
-function f(v) { return v.toFixed(2); }
+function r(v) {
+  return v.toFixed(4);
+}
+function f(v) {
+  return v.toFixed(2);
+}
 
 function seedOf(name) {
   let hash = 0;
@@ -65,7 +96,11 @@ const CLASSIFIERS = [
   [/深度思考碎碎念/, 'chibi-think', 'breathe'],
   [/打瞌睡被惊醒/, 'chibi-sleep', 'sway'],
   [/睡|小憩|打瞌睡|哈欠|沉眠/, 'chibi-sleep', 'doze'],
-  [/偷吃零食被抓住|吃|涮|Token|早餐|午餐|晚餐|零食|冰淇淋|大闸蟹|糖葫芦|长寿面|西瓜|火锅|月饼|粽子|年糕|青团|腊八粥|重阳糕|汤圆|饺子|讨糖/, 'chibi-eat', 'munch'],
+  [
+    /偷吃零食被抓住|吃|涮|Token|早餐|午餐|晚餐|零食|冰淇淋|大闸蟹|糖葫芦|长寿面|西瓜|火锅|月饼|粽子|年糕|青团|腊八粥|重阳糕|汤圆|饺子|讨糖/,
+    'chibi-eat',
+    'munch',
+  ],
   [/写代码|轻快记录/, 'chibi-work', 'shake'],
   [/照镜子|整体换装试色/, 'nahida-girl', 'sway'],
   [/撸猫|动物环绕|鲸鱼吐泡泡|蓝鲸现世/, 'chibi-aranara', 'breathe'],
@@ -73,8 +108,16 @@ const CLASSIFIERS = [
   [/被落叶淹没|玩游戏气急败坏/, 'chibi-sad', 'droop'],
   [/工作|忙碌|整理/, 'chibi-work', 'shake'],
   [/思考|观察|问|求教/, 'chibi-think', 'breathe'],
-  [/舞|跳|跃|摇摆|哼歌|伸懒腰|旋转|放风筝|放烟花|放河灯|孔明灯|圣诞树|舞狮|变鸽子|魔术|凭空生花/, 'chibi-happy', 'jump'],
-  [/魔方|玩具|水枪|小提琴|气球|礼物|陀螺|笛子|蝴蝶|木马|抛接|毽子|五子棋|秋千|雪人|红包|福字|乞巧|茱萸|幽灵|敲击|下蹲/, 'chibi-happy', 'sway'],
+  [
+    /舞|跳|跃|摇摆|哼歌|伸懒腰|旋转|放风筝|放烟花|放河灯|孔明灯|圣诞树|舞狮|变鸽子|魔术|凭空生花/,
+    'chibi-happy',
+    'jump',
+  ],
+  [
+    /魔方|玩具|水枪|小提琴|气球|礼物|陀螺|笛子|蝴蝶|木马|抛接|毽子|五子棋|秋千|雪人|红包|福字|乞巧|茱萸|幽灵|敲击|下蹲/,
+    'chibi-happy',
+    'sway',
+  ],
 ];
 
 function classify(name) {
@@ -138,12 +181,35 @@ for (const job of jobs) {
     `pad=680:400:x=(ow-iw)/2:y=(oh-ih)-20:color=0x00000000,` +
     `crop=640:360:x=(in_w-640)/2:y=${cropY}${drawtext},format=yuva420p[out]`;
   const args = [
-    '-hide_banner', '-loglevel', 'error', '-y',
-    '-loop', '1', '-framerate', '24', '-i', job.source,
-    '-filter_complex', filter,
-    '-map', '[out]', '-t', '10', '-an',
-    '-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p',
-    '-b:v', '0', '-crf', '32', '-auto-alt-ref', '0', '-row-mt', '1',
+    '-hide_banner',
+    '-loglevel',
+    'error',
+    '-y',
+    '-loop',
+    '1',
+    '-framerate',
+    '24',
+    '-i',
+    job.source,
+    '-filter_complex',
+    filter,
+    '-map',
+    '[out]',
+    '-t',
+    '10',
+    '-an',
+    '-c:v',
+    'libvpx-vp9',
+    '-pix_fmt',
+    'yuva420p',
+    '-b:v',
+    '0',
+    '-crf',
+    '32',
+    '-auto-alt-ref',
+    '0',
+    '-row-mt',
+    '1',
     job.output,
   ];
   const result = spawnSync('ffmpeg', args, { stdio: 'inherit' });

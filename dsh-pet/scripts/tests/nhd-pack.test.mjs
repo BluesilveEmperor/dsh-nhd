@@ -57,12 +57,29 @@ test('sampled nhd webm keeps a real alpha channel (regression: opaque background
     return;
   }
   for (const name of ['待机呼吸休闲', '是啊，吃什么']) {
-    const result = spawnSync('ffmpeg', [
-      '-hide_banner', '-loglevel', 'info', '-y', '-ss', '2',
-      '-c:v', 'libvpx-vp9', '-i', join(animationDir, `${name}.webm`),
-      '-vf', 'alphaextract,signalstats,metadata=mode=print',
-      '-frames:v', '1', '-f', 'null', '-',
-    ], { encoding: 'utf8' });
+    const result = spawnSync(
+      'ffmpeg',
+      [
+        '-hide_banner',
+        '-loglevel',
+        'info',
+        '-y',
+        '-ss',
+        '2',
+        '-c:v',
+        'libvpx-vp9',
+        '-i',
+        join(animationDir, `${name}.webm`),
+        '-vf',
+        'alphaextract,signalstats,metadata=mode=print',
+        '-frames:v',
+        '1',
+        '-f',
+        'null',
+        '-',
+      ],
+      { encoding: 'utf8' },
+    );
     const log = `${result.stdout}\n${result.stderr}`;
     assert.match(log, /YMIN=0\b/, `${name}: alpha minimum must be 0 (fully transparent pixels)`);
     assert.match(log, /YMAX=255\b/, `${name}: alpha maximum must be 255 (opaque character pixels)`);
@@ -71,8 +88,17 @@ test('sampled nhd webm keeps a real alpha channel (regression: opaque background
 
 test('nhd source portraits are present', () => {
   for (const name of [
-    'chibi-idle', 'chibi-happy', 'chibi-drag', 'chibi-aranara', 'chibi-sleep',
-    'chibi-sad', 'chibi-whisper', 'chibi-think', 'chibi-work', 'chibi-eat', 'nahida-girl',
+    'chibi-idle',
+    'chibi-happy',
+    'chibi-drag',
+    'chibi-aranara',
+    'chibi-sleep',
+    'chibi-sad',
+    'chibi-whisper',
+    'chibi-think',
+    'chibi-work',
+    'chibi-eat',
+    'nahida-girl',
   ]) {
     assert.ok(existsSync(join(packageRoot, 'assets', 'nhd', `${name}.png`)), `missing portrait: ${name}`);
   }

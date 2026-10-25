@@ -66,7 +66,10 @@ test('encoded private routes still require a capability; invalid encodings fail 
     assert.equal(res.status, 400);
   }
   assert.equal(
-    security.authorize(request({}, '/dsh-pet-nhd-7340/thumb/main/%E7%9C%8B.webm'), response() as unknown as ServerResponse),
+    security.authorize(
+      request({}, '/dsh-pet-nhd-7340/thumb/main/%E7%9C%8B.webm'),
+      response() as unknown as ServerResponse,
+    ),
     true,
   );
 });
