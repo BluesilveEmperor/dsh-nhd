@@ -57,7 +57,7 @@ ok.push(`${refCount} 个 $ref 全部可解析`);
 const METHODS = ['get', 'put', 'post', 'delete', 'patch', 'head', 'options', 'trace'];
 let ops = 0;
 for (const [p, item] of Object.entries(doc.paths)) {
-  if (!p.startsWith('/dsh-pet-7340')) fail.push(`路径未使用 /dsh-pet-7340 前缀: ${p}`);
+  if (!p.startsWith('/dsh-pet-nhd-7340')) fail.push(`路径未使用 /dsh-pet-nhd-7340 前缀: ${p}`);
   const keys = Object.keys(item).filter((k) => METHODS.includes(k));
   if (keys.length === 0) fail.push(`${p} 没有任何操作`);
   for (const m of keys) {
@@ -91,7 +91,7 @@ const implemented = new Set([...host.matchAll(/rest === '([^']+)'/g)].map((m) =>
 for (const s of ['font', 'pic', 'thumb']) implemented.add(s);
 const documented = new Set();
 for (const p of Object.keys(doc.paths)) {
-  const seg = p.slice('/dsh-pet-7340/'.length).split('/')[0];
+  const seg = p.slice('/dsh-pet-nhd-7340/'.length).split('/')[0];
   if (seg && !seg.startsWith('{')) documented.add(seg);
 }
 for (const seg of documented) {

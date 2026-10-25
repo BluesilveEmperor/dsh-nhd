@@ -82,7 +82,7 @@ function setup(): Harness {
     agentDefaultModel: { currentSelection: () => undefined },
     credentials: { resolve: async () => undefined },
   });
-  assert.ok(handler, 'apply() 应注册 /dsh-pet-7340 prefix handler');
+  assert.ok(handler, 'apply() 应注册 /dsh-pet-nhd-7340 prefix handler');
   assert.ok(listeners.length > 0, 'apply() 应监听 session/event');
 
   const harness: Harness = {
@@ -101,7 +101,7 @@ function setup(): Harness {
           };
           done(body.sections?.workStatus?.data ?? { state: null, task: null });
         });
-        void handler?.({ method: 'GET', url: '/dsh-pet-7340/state', on: noop }, res);
+        void handler?.({ method: 'GET', url: '/dsh-pet-nhd-7340/state', on: noop }, res);
       }),
     dispose: () => {
       // 插件收尾：清掉待执行的定时器（终态清理 60s；余额周期刷新是常驻的）——

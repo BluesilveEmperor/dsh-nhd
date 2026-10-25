@@ -212,7 +212,7 @@ export const softClampSpeed = (speed: number): number => {
 export const THROW_SPEED_ANCHOR = 1200;
 
 /**
- * 抛掷指令（`POST /dsh-pet-7340/throw` 的 `angle` + `power`）→ 初速度 (vx, vy)，px/s。
+ * 抛掷指令（`POST /dsh-pet-nhd-7340/throw` 的 `angle` + `power`）→ 初速度 (vx, vy)，px/s。
  *
  * `angle` 单位度，`0` = 正右，**逆时针为正**——屏幕坐标 y 向下，所以 `vy` 取负号
  * （"往上抛"写 90，而不是 270）。任意实数角度都成立（sin/cos 天然按 360 周期）。

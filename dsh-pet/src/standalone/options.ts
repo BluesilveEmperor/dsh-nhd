@@ -68,7 +68,7 @@ export function parseArgs(argv: string[]): { options: CliOptions } | { error: st
  * @param home DSH_HOME
  */
 export function configPathsFor(root: string, home: string): ConfigPaths {
-  const userRoot = join(home, 'dsh-pet');
+  const userRoot = join(home, 'dsh-pet-nhd');
   return {
     defaultFile: join(root, 'assets', 'config.jsonc'),
     userFile: join(userRoot, 'main-config.jsonc'),

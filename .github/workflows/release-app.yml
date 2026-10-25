@@ -10,7 +10,7 @@
 #   ① push tag v*        —— 推 v0.3.9 / 或在网页发布带新 tag 的 Release 时触发
 #   ② workflow_dispatch  —— 手动输入 tag，重跑构建并重挂资产（检出该 tag 的代码）
 #
-# 产物：dsh-pet-win-x64.zip（固定名，内含 dsh-pet-<版本>-win-x64/ 目录）
+# 产物：dsh-pet-win-x64.zip（固定名，内含 dsh-pet-nhd-<版本>-win-x64/ 目录）
 #   固定名是为了让 releases/latest/download/dsh-pet-win-x64.zip 这条永久链接成立。
 #
 # 前置：该 tag 的 Release 必须已经存在，否则第「确认 Release」步会失败并给出提示。
@@ -106,7 +106,7 @@ jobs:
       - name: 压缩为固定名 zip
         run: |
           $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
-          $inner = "dsh-pet-$version-win-x64"
+          $inner = "dsh-pet-nhd-$version-win-x64"
           $zip = Join-Path $env:GITHUB_WORKSPACE 'dsh-pet-win-x64.zip'
 
           New-Item -ItemType Directory -Path "stage/$inner" -Force | Out-Null

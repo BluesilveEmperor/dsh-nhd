@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const sourceDir = join(packageRoot, 'pet');
 const dshHome = process.env.DSH_HOME ? resolve(process.env.DSH_HOME) : join(homedir(), '.dsh');
-const targetDir = join(dshHome, 'dsh-pet', 'pet');
+const targetDir = join(dshHome, 'dsh-pet-nhd', 'pet');
 const targetConfig = join(targetDir, 'nhd-config.json');
 const force = process.argv.includes('--force');
 

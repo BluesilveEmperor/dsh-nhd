@@ -16,7 +16,7 @@ test('launcher runtime capability is private and only its owning process removes
       pluginRoot: '/test/plugin',
     };
     const release = writeStandaloneRuntime(home, details);
-    const file = join(home, 'dsh-pet', 'standalone-runtime.json');
+    const file = join(home, 'dsh-pet-nhd', 'standalone-runtime.json');
     const state = JSON.parse(readFileSync(file, 'utf8'));
     assert.equal(state.name, 'dsh-pet-standalone');
     assert.equal(state.pid, process.pid);
@@ -42,7 +42,7 @@ test('runtime cleanup is idempotent and removes its own manifest', () => {
     });
     release();
     release();
-    assert.throws(() => readFileSync(join(home, 'dsh-pet', 'standalone-runtime.json')), /ENOENT/);
+    assert.throws(() => readFileSync(join(home, 'dsh-pet-nhd', 'standalone-runtime.json')), /ENOENT/);
   } finally {
     rmSync(home, { recursive: true, force: true });
   }

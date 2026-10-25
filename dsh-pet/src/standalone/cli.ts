@@ -68,7 +68,7 @@ async function run(logger: StandaloneLogger, options: { port: number }): Promise
     routes,
     ai,
     authenticatedUrl: security.authenticatedUrl,
-    // 托盘「退出」→ 宿主路由 POST /dsh-pet-7340/quit → 这里 → 与 POST /shutdown 同一条收尾。
+    // 托盘「退出」→ 宿主路由 POST /dsh-pet-nhd-7340/quit → 这里 → 与 POST /shutdown 同一条收尾。
     shutdown: (reason) => forwardShutdown(reason),
   });
   // 停机函数要在服务之后定义（见上方 forwardShutdown 的说明）。
@@ -147,7 +147,7 @@ async function run(logger: StandaloneLogger, options: { port: number }): Promise
     '',
     '===== dsh-pet 独立模式（不需要 DSH）=====',
     `  插件        dsh-pet@${packageVersion(packageRoot)}  ${packageRoot}`,
-    `  路由        http://127.0.0.1:${server.port}/dsh-pet-7340/`,
+    `  路由        http://127.0.0.1:${server.port}/dsh-pet-nhd-7340/`,
     `  配置        ${configSource}`,
     `  宠物        ${describePets(pets)}`,
     desktopVisible.length === 0
@@ -182,7 +182,7 @@ async function main(): Promise<number> {
   }
   // 日志同时落盘（单文件、按大小截断）：独立模式常常没有终端，只写 stdout 等于丢失。
   // 插件 apply() 会复用这个 logger（ctx.logger 带 isFileLogger 标记），不会再开第二个写同一文件。
-  const logger = createStandaloneLogger({ file: join(dshHomeDir(), 'dsh-pet', 'logs.txt') });
+  const logger = createStandaloneLogger({ file: join(dshHomeDir(), 'dsh-pet-nhd', 'logs.txt') });
   // 纯模块（config/chat/whisper）没有 ctx.logger，靠默认出口落盘
   setDefaultLogger(logger);
   if (options.check) return runCheck(logger);

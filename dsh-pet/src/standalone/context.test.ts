@@ -96,10 +96,10 @@ describe('createStandaloneContext —— 与 Cordis 对齐的语义', () => {
     const context = createStandaloneContext({ port: 1, logger: silentLogger() });
     const webServer = webServerOf(context);
     const handler = (): void => {};
-    const dispose = webServer.register({ kind: 'prefix', path: '/dsh-pet-7340', handler });
+    const dispose = webServer.register({ kind: 'prefix', path: '/dsh-pet-nhd-7340', handler });
     assert.equal(typeof dispose, 'function');
     assert.equal(context.routes.length, 1);
-    assert.equal(context.routes[0]?.path, '/dsh-pet-7340');
+    assert.equal(context.routes[0]?.path, '/dsh-pet-nhd-7340');
     assert.equal(context.routes[0]?.handler, handler);
     (dispose as () => void)();
     assert.equal(context.routes.length, 0, '释放后路由应移除');

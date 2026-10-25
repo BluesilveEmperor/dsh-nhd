@@ -117,7 +117,7 @@ function cssFor(glyph: string): string {
 function injectCss(doc: Document, glyph: string): void {
   if (doc.querySelector('style[data-plugin-css="' + STYLE_TAG + '"]') !== null) return;
   const tag = doc.createElement('style');
-  tag.dataset.plugin = 'dsh-pet';
+  tag.dataset.plugin = 'dsh-pet-nhd';
   tag.dataset.pluginCss = STYLE_TAG;
   tag.textContent = cssFor(glyph);
   doc.head.appendChild(tag);

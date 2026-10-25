@@ -13,7 +13,7 @@
  *   GET  /standalone-ai/        AI 配置页（HTML，与 CLI 同一份 settingsPage）
  *   GET/POST /standalone-ai/settings   读写配置（需 X-DSH-Pet-Token，令牌在地址的 #token= 里）
  *   POST /standalone-ai/test    连通性测试
- *   *    /dsh-pet-7340/...      插件路由（桌面窗口用，因此额外放行 CORS）
+ *   *    /dsh-pet-nhd-7340/...      插件路由（桌面窗口用，因此额外放行 CORS）
  *
  * 插件路由也检查令牌与 Host；本地 file 页面由主进程给请求附加访问凭证，
  * null 来源本身不授予权限。凭证不写入页面地址、渲染脚本或日志。
@@ -89,7 +89,7 @@ async function boot(): Promise<void> {
   // 独立应用没有控制台：插件日志、standalone 日志、以及同进程 helper/渲染端的 console 全部落盘。
   // 原始 console 方法要**先快照**：包装后的 console 会转给文件 logger，而 logger 的 base 必须指向
   // 原始方法，否则 logger → console → logger 无限递归。
-  const logFile = join(dshHomeDir(), 'dsh-pet', 'logs.txt');
+  const logFile = join(dshHomeDir(), 'dsh-pet-nhd', 'logs.txt');
   const rawConsole = {
     log: console.log.bind(console),
     info: console.info.bind(console),
@@ -147,7 +147,7 @@ async function boot(): Promise<void> {
   process.env.DSH_PET_OPEN_TARGET = 'site';
   // 不注入宿主 PID：helper 的「宿主没了就退出」只对双进程有意义，同进程里设了会自己杀自己
   delete process.env.DSH_PET_HOST_PID;
-  process.env.DSH_PET_CONFIG_URL = `${origin}/dsh-pet-7340/config`;
+  process.env.DSH_PET_CONFIG_URL = `${origin}/dsh-pet-nhd-7340/config`;
   // 右键「打开网站」用它：带令牌的配置页（与 CLI 行为一致）。裸 origin 在应用里没有页面可看。
   process.env.DSH_PET_SITE_URL = security.authenticatedUrl(origin);
   if (!process.env.DSH_PET_SCALE) process.env.DSH_PET_SCALE = '1';

@@ -89,9 +89,9 @@ async function open(t, { get = customized, put, post, viewport = { width: 900, h
     errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   t.after(() => assert.deepEqual(errors, []));
-  await page.route('**/dsh-pet-7340/**', async (route) => {
+  await page.route('**/dsh-pet-nhd-7340/**', async (route) => {
     const request = route.request();
-    if (new URL(request.url()).pathname === '/dsh-pet-7340/config') {
+    if (new URL(request.url()).pathname === '/dsh-pet-nhd-7340/config') {
       if (request.method() === 'PUT') {
         writes.push(request.postDataJSON());
         if (put) return put(route);

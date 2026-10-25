@@ -31,8 +31,8 @@ import type { jsx } from 'react/jsx-runtime';
  * 「字变大 → 框变宽」才真正生效，且永不超过宠物本身宽度（桌面窗口只比宠物大一圈，超了会被裁）。
  * 断词用 break-word 而非 anywhere：只在整词放不下时才断，不会把 85% / ¥12.34 这类数字拆到两行。 */
 const bubbleCss = [
-  // 本地字体：/dsh-pet-7340/font/ 由 host 从 assets/fonts 提供；font-display swap 先回退后切换
-  '@font-face{font-family:"ShangshouSoftCandy";src:url("/dsh-pet-7340/font/上首软糖体.ttf") format("truetype");font-display:swap;font-weight:400}',
+  // 本地字体：/dsh-pet-nhd-7340/font/ 由 host 从 assets/fonts 提供；font-display swap 先回退后切换
+  '@font-face{font-family:"ShangshouSoftCandy";src:url("/dsh-pet-nhd-7340/font/上首软糖体.ttf") format("truetype");font-display:swap;font-weight:400}',
   '.dsh-pet-bubble{position:absolute;left:50%;transform:translateX(-50%);' +
     'bottom:calc(100% - var(--dsh-pet-size)*0.108);' +
     'width:max-content;min-width:calc(var(--f)*5.7143);max-width:min(calc(var(--f)*16),100%);' +
@@ -96,7 +96,7 @@ const bubbleCss = [
 function injectBubbleCss(): void {
   if (typeof document !== 'undefined' && document.querySelector('style[data-plugin-css="dsh-pet/bubble"]') === null) {
     const tag = document.createElement('style');
-    tag.dataset.plugin = 'dsh-pet';
+    tag.dataset.plugin = 'dsh-pet-nhd';
     tag.dataset.pluginCss = 'dsh-pet/bubble';
     tag.textContent = bubbleCss;
     document.head.appendChild(tag);
@@ -270,7 +270,7 @@ export function makeWhisperBubble(rt: {
     // 配图两种形态二选一（host 判定层保证）：url = 第三方自带的完整地址，直接用；image = 该条目
     // 表情包池内的名称，按素材根拼路径。判别位在字段名上，不靠 startsWith('http') 嗅探
     // （名字恰好长得像地址时会判错）。
-    const src = href || (key ? memeImageUrl(key, '/dsh-pet-7340', assetRoot) : '');
+    const src = href || (key ? memeImageUrl(key, '/dsh-pet-nhd-7340', assetRoot) : '');
     return h('div', {
       className: 'dsh-pet-bubble dsh-pet-whisper' + (src ? ' ' + MEME_BUBBLE_CLASS : '') + (on ? ' is-on' : ''),
       children: src

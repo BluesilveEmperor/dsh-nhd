@@ -19,7 +19,7 @@ export interface BundledPetPack {
 
 /** 包内 pet pack 目标目录：与 host/config.ts 的 petDir 推导同一口径 */
 export function bundledPetTargetDir(home: string): string {
-  return join(home, 'dsh-pet', 'pet');
+  return join(home, 'dsh-pet-nhd', 'pet');
 }
 
 /** 包内 pet pack 的配置文件名模式（与 host/config.ts scanPetFiles 同一套规则） */

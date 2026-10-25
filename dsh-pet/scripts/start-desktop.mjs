@@ -10,7 +10,7 @@
  * 其余端点（thumb/balance/trigger/notify/pic/font）由 renderer 从 configUrl 推导。
  *
  * 示例（对着一台已跑 dsh web 的机器）：
- *   node scripts/start-desktop.mjs http://127.0.0.1:3080/dsh-pet-7340/config
+ *   node scripts/start-desktop.mjs http://127.0.0.1:3080/dsh-pet-nhd-7340/config
  */
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const helperMain = resolve(here, '..', 'runtime', 'electron-helper', 'main.js');
 const defaultConfigUrl =
-  process.env.DSH_PET_CONFIG_URL || process.argv[2] || 'http://127.0.0.1:3080/dsh-pet-7340/config';
+  process.env.DSH_PET_CONFIG_URL || process.argv[2] || 'http://127.0.0.1:3080/dsh-pet-nhd-7340/config';
 
 // 平台适配：Electron 可执行文件相对路径（win32=electron.exe / darwin=Electron.app / linux=electron）
 const PLAT = process.platform;

@@ -103,7 +103,7 @@ before(() => {
     llm: { listProviders: () => [], listModels: async () => [] },
   });
   apply(hostCtx);
-  assert.ok(handler, 'apply() 应注册 /dsh-pet-7340 prefix handler');
+  assert.ok(handler, 'apply() 应注册 /dsh-pet-nhd-7340 prefix handler');
 
   call = (url, method = 'GET', body) =>
     new Promise<Result>((done) => {
@@ -143,7 +143,7 @@ after(() => {
 
 describe('GET /quit —— 探「宿主是否允许退出」', () => {
   test('宿主提供 shutdownApp → canQuit:true', async () => {
-    const r = await call('/dsh-pet-7340/quit');
+    const r = await call('/dsh-pet-nhd-7340/quit');
     assert.equal(r.status, 200);
     assert.deepEqual(JSON.parse(r.body), { canQuit: true });
   });
@@ -151,7 +151,7 @@ describe('GET /quit —— 探「宿主是否允许退出」', () => {
   test('DSH 宿主没有该能力 → canQuit:false（桌面端因此不显示退出项）', async () => {
     delete hostCtx.shutdownApp;
     try {
-      const r = await call('/dsh-pet-7340/quit');
+      const r = await call('/dsh-pet-nhd-7340/quit');
       assert.equal(r.status, 200);
       assert.deepEqual(JSON.parse(r.body), { canQuit: false });
     } finally {
@@ -163,7 +163,7 @@ describe('GET /quit —— 探「宿主是否允许退出」', () => {
 describe('POST /quit —— 把退出交给宿主停机', () => {
   test('有能力的宿主 → ok:true，原因记为「托盘退出」', async () => {
     quitReasons.length = 0;
-    const r = await call('/dsh-pet-7340/quit', 'POST');
+    const r = await call('/dsh-pet-nhd-7340/quit', 'POST');
     assert.equal(r.status, 200);
     assert.deepEqual(JSON.parse(r.body), { ok: true });
     // setImmediate 里才真正调停机（先让 200 写出去）
@@ -175,7 +175,7 @@ describe('POST /quit —— 把退出交给宿主停机', () => {
     delete hostCtx.shutdownApp;
     quitReasons.length = 0;
     try {
-      const r = await call('/dsh-pet-7340/quit', 'POST');
+      const r = await call('/dsh-pet-nhd-7340/quit', 'POST');
       const body = JSON.parse(r.body) as { ok: boolean; reason: string };
       assert.equal(r.status, 200, '不支持退出是业务结论，不是协议层错误');
       assert.equal(body.ok, false);
@@ -188,7 +188,7 @@ describe('POST /quit —— 把退出交给宿主停机', () => {
   });
 
   test('PUT → 405（退出是动作端点，不是可保存的资源）', async () => {
-    const r = await call('/dsh-pet-7340/quit', 'PUT');
+    const r = await call('/dsh-pet-nhd-7340/quit', 'PUT');
     assert.equal(r.status, 405);
   });
 });

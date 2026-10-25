@@ -1,6 +1,6 @@
 // 配置层（src/shared 单一来源，浏览器 bundle 与桌面 shared-core 共用）：
 // 配置的读取/合并/校验收敛在 host（src/host/config.ts 的 readAllConfig，经
-// GET /dsh-pet-7340/config 暴露成品）；本模块只做一件事：把**成品聚合**
+// GET /dsh-pet-nhd-7340/config 暴露成品）；本模块只做一件事：把**成品聚合**
 // （{ main: {...}, test1: {...}, ... }，字段已填满、绝对正确）拍平成渲染用宠物列表，
 // 条目级字段（animations / animationWeights / eventsRefreshSec / physics / font / confineToScreen /
 // workStatusTexts / whisperModel / chatModel）吹进每只实例——它们都是「所属条目一份、多实例共享」；

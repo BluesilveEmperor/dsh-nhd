@@ -6,8 +6,8 @@
 #   2. electronDist 指向本机已解压的 Electron（默认 ~/.dsh/electron），由 scripts/dist.mjs 注入，
 #      避免每次打包都从 GitHub 重新下一套 110 MB —— 这台机器 github.com 不通。
 #   3. asar 打开：素材（webm 51 MB）留在包内由主进程 fs 读取；没有原生模块需要 unpack。
-appId: com.pc2005.dsh-pet
-productName: dsh-pet
+appId: com.bluesilve.dsh-pet-nhd
+productName: dsh-pet-nhd
 copyright: dsh-pet contributors
 
 directories:

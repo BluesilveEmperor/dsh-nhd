@@ -53,7 +53,7 @@ AI 生成动画的配方     源视频 → 透明动画的管线    运行在 DS
 | 方式 | 适用场景 | 做法 |
 |---|---|---|
 | **桌宠应用（推荐）** | 只想养宠物 | 从 [Releases](https://github.com/BluesilveEmperor/dsh-nhd/releases) 下载 `dsh-pet-win-x64.zip`，解压双击 `dsh-pet.exe`——首次启动自动安装纳西妲包，已有配置不会被覆盖 |
-| **pet pack** | 已在用 dsh-pet 插件 | 下载 `dsh-pet-nhd-pet-pack.zip` 解压到 `$DSH_HOME/dsh-pet/pet/`；或在 clone 的仓库里跑 `cd dsh-pet && npm run pet:nhd:install`（`--force` 覆盖旧包） |
+| **pet pack** | 已在用 dsh-pet 插件 | 下载 `dsh-pet-nhd-pet-pack.zip` 解压到 `$DSH_HOME/dsh-pet-nhd/pet/`；或在 clone 的仓库里跑 `cd dsh-pet && npm run pet:nhd:install`（`--force` 覆盖旧包） |
 | **源码重建** | 想改形象/动作 | `npm run pet:nhd:build`（重新生成配置与 106 个动画），再 `npm run pet:nhd:install` |
 
 ### 与上游的能力差异
@@ -170,14 +170,14 @@ dsh plugin --profile web add file:D:/path/to/dsh-nhd/dsh-pet
 
 - **能做什么**：让它说一句指定的话、播一段指定动画、与它对话；读它当前说的话、工作状态、系统通知与余额
 - **为什么开放**：桌宠不该只是个摆设——比如一个「女仆」插件巡检验完想说句话，就能让桌宠当它的「实体」开口；也方便任何人基于它做二次开发
-- **通道一 · HTTP**：挂在 DSH 自己的 Web 服务上（前缀 `/dsh-pet-7340`，只监听本机、无鉴权），跨进程、脚本可直接调。动作类接口只回 `{ok}`，数据统一从 `GET /state` 读
-- **通道二 · Cordis 服务**：客户端半侧在 DSH web 页面内注册，同页客户端插件用 `ctx.get('petApi7340')` 直接取，零网络、零端口；只在该页面实例内有效，方法与返回见 [`CORDIS.md`](CORDIS.md)
+- **通道一 · HTTP**：挂在 DSH 自己的 Web 服务上（前缀 `/dsh-pet-nhd-7340`，只监听本机、无鉴权），跨进程、脚本可直接调。动作类接口只回 `{ok}`，数据统一从 `GET /state` 读
+- **通道二 · Cordis 服务**：客户端半侧在 DSH web 页面内注册，同页客户端插件用 `ctx.get('petNhdApi7340')` 直接取，零网络、零端口；只在该页面实例内有效，方法与返回见 [`CORDIS.md`](CORDIS.md)
 
 相关文件（HTTP 与 Cordis 各一套）：
 
 - [`API.md`](API.md) —— HTTP 接口一览（每个接口一句话，功能预览）
 - [`openapi.yaml`](openapi.yaml) —— 完整契约（OpenAPI 3.1，可直接导入 Swagger UI / Postman）
-- [`CORDIS.md`](CORDIS.md) —— 对外 Cordis 服务（客户端半侧，页面内 `ctx.get('petApi7340')`，不走网络）
+- [`CORDIS.md`](CORDIS.md) —— 对外 Cordis 服务（客户端半侧，页面内 `ctx.get('petNhdApi7340')`，不走网络）
 - [`tools/api-tester.html`](tools/api-tester.html) —— HTTP 侧示例：桌宠控制台，扮演第三方消费方，可直观试用（`node tools/api-tester.cjs` 启动）
 - [`tools/cordis-probe`](tools/cordis-probe/README.md) —— Cordis 侧示例：扮演同页客户端插件，用 `ctx.get()` 消费服务
 
@@ -195,7 +195,7 @@ dsh plugin --profile web add file:D:/path/to/dsh-nhd/dsh-pet
 - **依赖**：首次启动自动探测/下载 Electron（`~/.dsh/electron/`，也可 `cd dsh-pet && npm run ensure:electron` 手动触发）；缺失时仅日志告警，不影响浏览器形态
 - **开关 = 每只宠物的必填字段 `display`**：`web` = 仅浏览器 / `desktop` = 仅桌面 / `both` = 两者 / `none` = 都不显示；桌面模式渲染 display 含 desktop 的**全部**宠物（多开同屏，与浏览器一致），设置页「桌宠配置」编辑即时生效
 - 桌面端数据走独立进程管道，不依赖 DSH 的 HTTP 路由，不受 web 访问闸门影响
-- 本地调试：`cd dsh-pet && npm run start:desktop -- http://127.0.0.1:3080/dsh-pet-7340/config`（无宿主时自动回落 HTTP 路径）
+- 本地调试：`cd dsh-pet && npm run start:desktop -- http://127.0.0.1:3080/dsh-pet-nhd-7340/config`（无宿主时自动回落 HTTP 路径）
 
 ## 🧍 独立运行（完全不打开 DSH）
 
@@ -203,7 +203,7 @@ dsh plugin --profile web add file:D:/path/to/dsh-nhd/dsh-pet
 
 ```sh
 npm install -g dsh-pet        # 必须 npm 装；dsh plugin add 装进 profile，bin 不在 PATH 上
-dsh-pet-standalone            # http://127.0.0.1:3080/dsh-pet-7340/（占用则顺延）
+dsh-pet-standalone            # http://127.0.0.1:3080/dsh-pet-nhd-7340/（占用则顺延）
 dsh-pet-standalone --check    # 只体检
 dsh-pet-standalone --port 3100
 
@@ -212,9 +212,9 @@ npm run build && npm run standalone   # 仓库里（先构建）
 
 - **能用**：动画链、点击/拖拽/甩抛、右键菜单、多开、自定义动画与表情包、pet pack。
 - **不可用**：余额、碎碎念、对话、系统通知——返回带 `reason` 的结构化失败（见 [`API.md`](API.md)）。
-- **配置**：与 DSH 同一份（`$DSH_HOME/dsh-pet/main-config.jsonc` → 包内默认）。
+- **配置**：与 DSH 同一份（`$DSH_HOME/dsh-pet-nhd/main-config.jsonc` → 包内默认）。
 - **只显示 `display` 含 `desktop`/`both` 的实例**；端口默认 3080；`Ctrl+C` 或 `POST /shutdown` 退出。
-- **与 DSH 内运行可同时开**，但共用 `%APPDATA%\dsh-pet-electron-helper`，可能互相踩缓存（仅告警）。
+- **与 DSH 内运行可同时开**，但共用 `%APPDATA%\dsh-pet-nhd-electron-helper`，可能互相踩缓存（仅告警）。
 
 ## ⚙️ 余额展示（Balance）
 
@@ -231,7 +231,7 @@ npm run build && npm run standalone   # 仓库里（先构建）
 
 - **碎碎念**：`pets[i].whisperEnabled` 开启后，按 `eventsRefreshSec.whisper`（秒，默认 300）周期自动生成一句——每只宠物独立周期、独立文案；触发时随机抽 `events.whisper` 动画 + 头顶说话气泡（10 秒消失）。默认开启
 - **手动触发**：右键菜单「碎碎念」随时来一句——不受 `whisperEnabled` 门控（该字段只关自动周期轮询）
-- **对话**：右键菜单「对话」或 `/chat` 命令打开输入框，与宠物聊天——回复走碎碎念同款展示（说话动画 + 气泡）；记忆持久化在 `$DSH_HOME/dsh-pet/memory.json`，浏览器与桌面共享同一份；多宠物时先用 `/pet` 选择对话目标
+- **对话**：右键菜单「对话」或 `/chat` 命令打开输入框，与宠物聊天——回复走碎碎念同款展示（说话动画 + 气泡）；记忆持久化在 `$DSH_HOME/dsh-pet-nhd/memory.json`，浏览器与桌面共享同一份；多宠物时先用 `/pet-nhd` 选择对话目标
 
 ## ⚙️ 工作状态联动（Work Status）
 
@@ -272,11 +272,11 @@ DSH 设置 → 「桌宠配置」：
 
 - 每只宠物：`id`（标识）／ `size`（宽度 px）／ `balanceEnabled`（是否启用余额功能，必填布尔）／ `display`（web/desktop/both/none，必填，见上）／ `position`（corner 四角之一 + marginX/marginY 边距）
 - 余额刷新周期：`eventsRefreshSec.balance`（秒）——余额数据刷新与余额动画触发的间隔，启动时立即触发一次，之后按此周期循环（默认 1800）
-- 设置页的修改保存到用户层 `$DSH_HOME/dsh-pet/main-config.jsonc`（**完整宠物列表**，覆盖包内默认）；「同步」把包内 `config.jsonc` 原文整份写入该文件（等价于回落默认，但文件保留下来、可直接编辑）
+- 设置页的修改保存到用户层 `$DSH_HOME/dsh-pet-nhd/main-config.jsonc`（**完整宠物列表**，覆盖包内默认）；「同步」把包内 `config.jsonc` 原文整份写入该文件（等价于回落默认，但文件保留下来、可直接编辑）
 
 ### 方式三：手动编辑配置文件（高级，任意自由配置）
 
-用户层配置文件位于 `$DSH_HOME/dsh-pet/main-config.jsonc`。**它和包内默认配置是同一套格式**——想改什么直接照着 `assets/config.jsonc` 的结构写即可，写错的字段/缺失的字段回落默认，无需（也无法）写完整份。设置页「同步」可直接生成这份完整文件（原文复制包内 `config.jsonc`，注释齐全）：
+用户层配置文件位于 `$DSH_HOME/dsh-pet-nhd/main-config.jsonc`。**它和包内默认配置是同一套格式**——想改什么直接照着 `assets/config.jsonc` 的结构写即可，写错的字段/缺失的字段回落默认，无需（也无法）写完整份。设置页「同步」可直接生成这份完整文件（原文复制包内 `config.jsonc`，注释齐全）：
 
 | 字段                   | 作用                                                                                    | 格式与默认一致即可         |
 | ---------------------- | --------------------------------------------------------------------------------------- | -------------------------- |
@@ -293,7 +293,7 @@ DSH 设置 → 「桌宠配置」：
 方式一~三都只调整**默认宠物的实例**（数量/大小/位置），动画池始终是全局一份。要添加**全新种类的宠物**（独立动画池 + 自己的素材），在用户数据根下建 `pet/` 目录：
 
 ```
-$DSH_HOME/dsh-pet/
+$DSH_HOME/dsh-pet-nhd/
 ├─ main-config.jsonc           ← 主宠物配置（现有，不动）
 ├─ main-animation/webm/*.webm  ← 主宠物素材（现有，只属于 main）
 └─ pet/
@@ -556,7 +556,7 @@ python encode_thumbs.py      # 转码 640×360 播放变体 → step04/
 插件默认只发布 `.webm`（VP9-alpha），Safari/WKWebView 不认 webm alpha（黑底），macOS 需要在 GitHub Release 下载官方转码的 **HEVC-with-Alpha `.mov`** 素材使用，两步：
 
 1. **下载**：<https://github.com/PC2005-cloud/dsh-pet/releases/tag/assets-mov>（固定 tag，保持最新；zip 解压后文件名与 webm 一一对应）
-2. **放入**：`.mov` 文件放进 `$DSH_HOME/dsh-pet/main-animation/mov/`（pet pack 宠物则是 `pet/<种类名>-animation/mov/`）
+2. **放入**：`.mov` 文件放进 `$DSH_HOME/dsh-pet-nhd/main-animation/mov/`（pet pack 宠物则是 `pet/<种类名>-animation/mov/`）
 
 ### ③ 动画 → 插件
 

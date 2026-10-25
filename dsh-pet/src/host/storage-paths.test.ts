@@ -33,7 +33,7 @@ function pathOf(entries: ReturnType<typeof storageEntries>, key: string): string
 
 describe('storageEntries —— 写入方路径原样透传（不自己拼目录名）', () => {
   test('userData 与 electron 就是调用方给的路径，一个字符都不改', () => {
-    // 故意给一个不符合任何默认约定的路径：若本模块偷偷拼 'dsh-pet' / 'electron'，这里必红
+    // 故意给一个不符合任何默认约定的路径：若本模块偷偷拼 'dsh-pet-nhd' / 'electron'，这里必红
     const entries = storageEntries({
       userDataRoot: 'Z:\\weird\\place',
       electronDir: 'Z:\\another\\runtime',
@@ -98,7 +98,7 @@ describe('storageEntries —— 逐平台路径推导', () => {
     try {
       const mk = () =>
         storageEntries({
-          userDataRoot: join(dir, 'dsh-pet'),
+          userDataRoot: join(dir, 'dsh-pet-nhd'),
           electronDir: join(dir, 'electron'),
           home: dir,
           packageRoot: dir,
@@ -109,7 +109,7 @@ describe('storageEntries —— 逐平台路径推导', () => {
       assert.equal(mk().find((e) => e.key === 'package')?.exists, true);
       assert.equal(mk().find((e) => e.key === 'userData')?.exists, false);
 
-      mkdirSync(join(dir, 'dsh-pet'), { recursive: true });
+      mkdirSync(join(dir, 'dsh-pet-nhd'), { recursive: true });
       assert.equal(mk().find((e) => e.key === 'userData')?.exists, true);
     } finally {
       rmSync(dir, { recursive: true, force: true });

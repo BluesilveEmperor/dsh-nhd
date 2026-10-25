@@ -32,7 +32,7 @@ export function installDesktopAuth(session: DesktopSession, origin: string, rend
       const page = frame ? new URL(frame.url) : undefined;
       if (
         target.origin === origin &&
-        target.pathname.startsWith('/dsh-pet-7340/') &&
+        target.pathname.startsWith('/dsh-pet-nhd-7340/') &&
         frame?.parent === null &&
         page?.protocol === 'file:' &&
         page.origin === 'null' &&

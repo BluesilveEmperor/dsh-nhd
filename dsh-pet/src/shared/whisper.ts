@@ -33,16 +33,16 @@ export function whisperBubbleView(state: WhisperState): WhisperBubbleRow[] {
  * assetRoot 缺省/空白 → 退回旧的两段形式 `<base>/pic/memes/<名称>.png`（= 素材根 main 的目录链），
  * 未打标的宠物与老宿主仍能取到包内表情包，不至于图裂。
  *
- * base 语义 = 各端的「已含 /dsh-pet-7340 前缀的宿主基址」（**与视频的 assetBase 一致**）：
- *   - 浏览器：缺省 `/dsh-pet-7340`（页面就在宿主 origin 上，相对路径即可）；
- *   - 桌面：传 `BASE`（`http://127.0.0.1:<port>/dsh-pet-7340` 或 bridge 的
- *     `dsh-pet-bridge://dsh-pet/dsh-pet-7340`）——桌面页面是 file:// 加载的，
+ * base 语义 = 各端的「已含 /dsh-pet-nhd-7340 前缀的宿主基址」（**与视频的 assetBase 一致**）：
+ *   - 浏览器：缺省 `/dsh-pet-nhd-7340`（页面就在宿主 origin 上，相对路径即可）；
+ *   - 桌面：传 `BASE`（`http://127.0.0.1:<port>/dsh-pet-nhd-7340` 或 bridge 的
+ *     `dsh-pet-bridge://dsh-pet/dsh-pet-nhd-7340`）——桌面页面是 file:// 加载的，
  *     相对路径会被解析成 file:///… 而必然失败；且 bridge 模式必须走自定义 scheme。
  *
- * 注意：base 已含 `/dsh-pet-7340`，函数内**不得**再拼一次（否则出现
- * `…/dsh-pet-7340/dsh-pet-7340/…` 而 404——桌面端图裂的成因）。
+ * 注意：base 已含 `/dsh-pet-nhd-7340`，函数内**不得**再拼一次（否则出现
+ * `…/dsh-pet-nhd-7340/dsh-pet-nhd-7340/…` 而 404——桌面端图裂的成因）。
  */
-export function memeImageUrl(name: string, base = '/dsh-pet-7340', assetRoot = ''): string {
+export function memeImageUrl(name: string, base = '/dsh-pet-nhd-7340', assetRoot = ''): string {
   const root = String(assetRoot ?? '').trim();
   const prefix = root ? '/pic/memes/' + encodeURIComponent(root) : '/pic/memes';
   return base + prefix + '/' + encodeURIComponent(name) + '.png';
@@ -74,7 +74,7 @@ export function injectMemeBubbleCss(): void {
   memeCssInjected = true;
   if (document.querySelector('style[data-plugin-css="dsh-pet/meme-bubble"]') !== null) return;
   const tag = document.createElement('style');
-  tag.dataset.plugin = 'dsh-pet';
+  tag.dataset.plugin = 'dsh-pet-nhd';
   tag.dataset.pluginCss = 'dsh-pet/meme-bubble';
   tag.textContent = MEME_BUBBLE_CSS;
   document.head.appendChild(tag);
@@ -84,10 +84,10 @@ export function injectMemeBubbleCss(): void {
  * 生成气泡配图节点（两端共用同一份渲染：浏览器 React 壳与桌面 DOM 壳都调它）。
  * 返回 null 表示「本次不配图」——调用方据此走纯文本路径（老行为不变）。
  * @param name 配图名称（配置 memes 的键）；缺省/空白 → null
- * @param base 已含 /dsh-pet-7340 的宿主基址（与视频同规则）：浏览器缺省，桌面传 BASE
+ * @param base 已含 /dsh-pet-nhd-7340 的宿主基址（与视频同规则）：浏览器缺省，桌面传 BASE
  * @param assetRoot 素材根（= 该宠物的条目 key）：决定图片去哪个表情包目录链取，见 memeImageUrl
  */
-export function createMemeImage(name?: string, base = '/dsh-pet-7340', assetRoot = ''): HTMLImageElement | null {
+export function createMemeImage(name?: string, base = '/dsh-pet-nhd-7340', assetRoot = ''): HTMLImageElement | null {
   const key = String(name ?? '').trim();
   if (!key) return null;
   injectMemeBubbleCss();

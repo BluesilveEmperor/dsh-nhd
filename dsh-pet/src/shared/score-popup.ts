@@ -32,7 +32,7 @@ function injectScoreCss(): void {
   if (scoreCssInjected || typeof document === 'undefined') return;
   scoreCssInjected = true;
   const tag = document.createElement('style');
-  tag.dataset.plugin = 'dsh-pet';
+  tag.dataset.plugin = 'dsh-pet-nhd';
   tag.dataset.pluginCss = 'dsh-pet/score';
   tag.textContent = SCORE_POPUP_CSS;
   document.head.appendChild(tag);

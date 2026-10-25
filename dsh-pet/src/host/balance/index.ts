@@ -7,7 +7,7 @@
  *   服务商不在此表 → 显式 `unsupported`，由上层决定不显示，绝不静默伪造 0 余额；
  * - **一个服务商 = 一个自包含文件**（见 ./providers/）：接口地址、业务常量、响应解析都在它自己那份。
  *   加一个内置服务商 = 加一个 provider 文件 + 在 ./registry.ts 的内置数组里加一行；
- *   第三方服务商不进这里 —— 走 `registerBalanceProvider`（宿主经 `ctx.provide('petApi7340')` 暴露）；
+ *   第三方服务商不进这里 —— 走 `registerBalanceProvider`（宿主经 `ctx.provide('petNhdApi7340')` 暴露）；
  * - key 由调用方经 DSH 官方 credentialRef 解析后注入（不直接读 .credentials.yaml）；
  * - 例外：DSH 账号路由（`deepseek-account`，免费额度 / 平台登录）**没有** API Key，它的凭证是
  *   账号服务持有的授权记录，由调用方经 `resolveAccount` 注入查询（同样不直接读凭证存储）；

@@ -1,5 +1,5 @@
 // 对话输入弹窗（src/shared，浏览器 bundle 与桌面 shared-core 共用）：
-//  - 纯逻辑：类型 / 发送（走 host /dsh-pet-7340/chat，host 是 memory.json 唯一读写方
+//  - 纯逻辑：类型 / 发送（走 host /dsh-pet-nhd-7340/chat，host 是 memory.json 唯一读写方
 //    —— 浏览器与桌面同一实例天然共享同一份记忆，两端只是不同显示方式）；
 //  - CHAT_CSS + mountChatDialog：自 menu.ts 之后第二个「两端共用同一份 DOM」例外
 //    （菜单组件证明可行的模式：浏览器页面与桌面透明窗渲染完全一致的对话框）。
@@ -11,7 +11,7 @@
 //    /state 轮询展示，onSent 只用来叫醒一拍，让结果 0 延迟可见（见各端实现）。
 // 记忆语义：memory.json 全存不删；host 每次请求只截尾部 chatMemoryRounds 轮进上下文。
 
-/** POST /dsh-pet-7340/chat?pet=<id> {text}：回执为 `{ok,text,image?}`；本类型只声明消费方
+/** POST /dsh-pet-nhd-7340/chat?pet=<id> {text}：回执为 `{ok,text,image?}`；本类型只声明消费方
  *  用到的 `ok`（正文展示一律走 /state 的 pets.<id>.say） */
 export type ChatSendState =
   | { ok: true }
@@ -77,7 +77,7 @@ function injectChatCss(): void {
   if (chatCssInjected || typeof document === 'undefined') return;
   chatCssInjected = true;
   const tag = document.createElement('style');
-  tag.dataset.plugin = 'dsh-pet';
+  tag.dataset.plugin = 'dsh-pet-nhd';
   tag.dataset.pluginCss = 'dsh-pet/chat';
   tag.textContent = CHAT_CSS;
   document.head.appendChild(tag);
@@ -101,7 +101,7 @@ export interface ChatDialogMount {
  *  约束到该矩形内即可完整显示，**窗口/宠物零移动零闪帧**。 */
 export function mountChatDialog(opts: {
   petId: string;
-  /** 端点基址：浏览器默认相对 /dsh-pet-7340/chat；桌面传绝对 URL（file:// 页面需绝对） */
+  /** 端点基址：浏览器默认相对 /dsh-pet-nhd-7340/chat；桌面传绝对 URL（file:// 页面需绝对） */
   baseUrl?: string;
   /** 这个弹窗开在**哪一端**：`POST /chat` 的 `?surface=` 是必填的（宿主据此把"必然不可能"提前
    *  拒掉，见 src/host/surface.ts）。弹窗只可能开在网页或桌面，所以这里只有两个取值。 */
@@ -117,7 +117,7 @@ export function mountChatDialog(opts: {
 }): ChatDialogMount {
   injectChatCss();
   const { petId, surface, x, y, onSent, onClose, clamp } = opts;
-  const baseUrl = opts.baseUrl ?? '/dsh-pet-7340/chat';
+  const baseUrl = opts.baseUrl ?? '/dsh-pet-nhd-7340/chat';
   // `surface` 必填（宿主校验）；这个 URL 只用于 POST 发送——GET 读记忆那条路不需要它
   const withPet = baseUrl + '?pet=' + encodeURIComponent(petId) + '&surface=' + surface;
   const c =

@@ -31,7 +31,7 @@ test('only the local main renderer receives the capability, scoped to the API or
     );
     return result;
   };
-  const endpoint = 'http://127.0.0.1:3080/dsh-pet-7340/chat';
+  const endpoint = 'http://127.0.0.1:3080/dsh-pet-nhd-7340/chat';
   const ownFrame = { url: renderer + '?petIndex=0', parent: null };
   assert.equal(send(endpoint, ownFrame)['X-DSH-Pet-Token'], 'private-token');
   for (const frame of [
@@ -50,9 +50,9 @@ test('only the local main renderer receives the capability, scoped to the API or
     assert.equal(headers['content-type'], 'application/json');
   }
   for (const url of [
-    'http://127.0.0.1:3081/dsh-pet-7340/chat',
-    'http://localhost:3080/dsh-pet-7340/chat',
-    'https://example.invalid/dsh-pet-7340/chat',
+    'http://127.0.0.1:3081/dsh-pet-nhd-7340/chat',
+    'http://localhost:3080/dsh-pet-nhd-7340/chat',
+    'https://example.invalid/dsh-pet-nhd-7340/chat',
     'http://127.0.0.1:3080/standalone-ai/settings',
     'invalid-url',
   ]) {

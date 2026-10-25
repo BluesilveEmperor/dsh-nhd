@@ -3,7 +3,7 @@
 // 这是**独立于宠物**的能力（监测 DSH 事件 → 弹 toast），天然只随 DSH 网页端走；
 // 桌面模式是宠物本体，不做宠物无关的功能——「两端一致」只约束宠物行为。
 // 行为（帧 → 文案）来自 src/shared/notify.ts（单一来源）。
-// 单一总开关：读成品配置（GET /dsh-pet-7340/config）main 条目的 notificationsEnabled；纯副作用模块，
+// 单一总开关：读成品配置（GET /dsh-pet-nhd-7340/config）main 条目的 notificationsEnabled；纯副作用模块，
 // 无 react 依赖，由 app.ts 装配层初始化。
 //
 // 事件路径（与 0.1.1 版的差异）：旧实现经浏览器 connection 事件流（api.events.mux / events.host）
@@ -54,8 +54,8 @@ function isPageActive(): boolean {
 
 // ---------- 发送 ----------
 
-/** 图标 URL（pic 路由由宿主提供：assets/pic → /dsh-pet-7340/pic/<file>） */
-const PIC = (name: string): string => '/dsh-pet-7340/pic/' + name + '.png';
+/** 图标 URL（pic 路由由宿主提供：assets/pic → /dsh-pet-nhd-7340/pic/<file>） */
+const PIC = (name: string): string => '/dsh-pet-nhd-7340/pic/' + name + '.png';
 
 /** 图标 URL 表（设置页「获取权限」成功确认的测试通知也用）——文件名单一来源在 shared */
 export const NOTIFY_ICONS = {
@@ -169,7 +169,7 @@ export async function requestNotificationPermission(): Promise<PermissionResult>
  * 拉取/解析失败时不阻塞（默认开启）。 */
 async function readNotificationsEnabled(): Promise<boolean> {
   try {
-    const r = await fetch('/dsh-pet-7340/config');
+    const r = await fetch('/dsh-pet-nhd-7340/config');
     if (!r.ok) return true;
     const d = (await r.json().catch(() => null)) as { main?: { notificationsEnabled?: unknown } } | null;
     return typeof d?.main?.notificationsEnabled === 'boolean' ? d.main.notificationsEnabled : true;

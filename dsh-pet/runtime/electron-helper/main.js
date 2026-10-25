@@ -83,10 +83,10 @@ const APP_MODE = process.env.DSH_PET_APP_MODE === '1';
 const APP_TOKEN = APP_MODE ? process.env.DSH_PET_APP_TOKEN : undefined;
 // 名字必须与 src/host/storage-paths.ts 的 DESKTOP_APP_NAME 逐字一致
 // （storage-paths.test.ts 会直接读本文件比对，改名不同步测试就红）。
-app.setName('dsh-pet-electron-helper');
+app.setName('dsh-pet-nhd-electron-helper');
 // 应用模式只改**数据目录**，不改应用名：独立应用与 DSH 内的 helper 若共用同一个 userData，
 // 两个 Chromium 进程会抢同一份 profile（单例锁）互相踢。名字不动也就不会触发上面那个防漂移测试。
-if (APP_MODE) app.setPath('userData', path.join(app.getPath('appData'), 'dsh-pet'));
+if (APP_MODE) app.setPath('userData', path.join(app.getPath('appData'), 'dsh-pet-nhd'));
 
 /** DPI 探测子进程模式：不建窗口，只把主屏 scaleFactor 打到 stdout 就退出（见 probePrimaryScale） */
 const DPI_PROBE = process.env.DSH_PET_DPI_PROBE === '1';
@@ -424,7 +424,7 @@ function deskGeometry() {
 function createPetWindows() {
   const geo = deskGeometry();
   const area = geo.hull;
-  const configUrl = process.env.DSH_PET_CONFIG_URL || 'http://127.0.0.1:3080/dsh-pet-7340/config';
+  const configUrl = process.env.DSH_PET_CONFIG_URL || 'http://127.0.0.1:3080/dsh-pet-nhd-7340/config';
   const pets = petsFromEnv();
   const scale = petScale();
   for (const pet of pets) {
@@ -653,7 +653,7 @@ function startBridgeCallback() {
 
 /** 处理一个渲染端请求：拼宿主请求行 → 等应答 → 组装 Response（素材读盘） */
 async function handleBridgeRequest(request) {
-  const url = new URL(request.url); // dsh-pet-bridge://dsh-pet/dsh-pet-7340/...
+  const url = new URL(request.url); // dsh-pet-bridge://dsh-pet/dsh-pet-nhd-7340/...
   const method = request.method || 'GET';
   let body;
   if (method === 'POST' || method === 'PUT') {
@@ -686,8 +686,8 @@ async function handleBridgeRequest(request) {
 // 菜单是静态的，但每次切换 display 都会让宿主重启本进程（syncDesktop），新进程按新配置重建菜单，
 // 所以这里不需要任何「重建菜单刷新勾选」的逻辑。
 
-const PET_ROUTE = '/dsh-pet-7340';
-const ORIGIN = new URL(process.env.DSH_PET_CONFIG_URL || 'http://127.0.0.1:3080/dsh-pet-7340/config').origin;
+const PET_ROUTE = '/dsh-pet-nhd-7340';
+const ORIGIN = new URL(process.env.DSH_PET_CONFIG_URL || 'http://127.0.0.1:3080/dsh-pet-nhd-7340/config').origin;
 const TRAY_PLATFORM = trayPlatform(process.platform);
 
 /** 与宿主 handlePetRoute 通信：bridge 模式走管道，手动 start-desktop 流退回 HTTP 直连 */

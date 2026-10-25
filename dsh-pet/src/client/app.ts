@@ -60,7 +60,7 @@ export function makeFactory(): (require: (mod: string) => any) => any {
     // 宠物页面（overlay）与配置设置页：组件各自独立文件，这里只组装 + 注册
     const PetMulti = makePetUI({ h, useState, useEffect, useRef });
 
-    const name = 'pet';
+    const name = 'pet-nhd';
     // commandUi 写成服务依赖（与官方 client-ui-permission-presets 的写法一致）：
     // 让 cordis 等「/」命令入口服务就绪后才 apply 本插件，保证 /pet 装饰必然注册成功。
     const inject = ['slots', 'locale', 'connection', 'remote', 'remote.commands', 'commandUi'];
@@ -78,11 +78,11 @@ export function makeFactory(): (require: (mod: string) => any) => any {
       //   progress(petId) 播放进度（位置/总长/暂停/缓冲）；桌面端没有这条路，也没有 Cordis 容器
       //
       // **只开读**：让它播什么、停什么仍走 HTTP 接口，避免控制出现两条通道（契约分叉）。
-      // 服务名带 `7340` 后缀，与 HTTP 路由 `/dsh-pet-7340` 同源：DSH 生态里的桌宠插件有几百个，
+      // 服务名带 `7340` 后缀，与 HTTP 路由 `/dsh-pet-nhd-7340` 同源：DSH 生态里的桌宠插件有几百个，
       // 裸名（petPose / petApi）撞名概率太高，而 Cordis 里同名服务二次 provide 会**直接抛错**、
       // 让整个客户端插件加载失败（overlay 与设置页全都不注册）。消费者用
-      // `ctx.get('petApi7340')` 探测——拿不到就是老版本，不抛。
-      ctx.provide('petApi7340', { pose: readPose, progress: readProgress });
+      // `ctx.get('petNhdApi7340')` 探测——拿不到就是老版本，不抛。
+      ctx.provide('petNhdApi7340', { pose: readPose, progress: readProgress });
 
       // 系统通知：host 侧监听 DSH 宿主事件生成通知帧，写进 /state 的 sections.notify；
       // 容器的统一轮询发现 counter 变化后调 notifyFromFrame 弹 toast（本引擎不再自己轮询）。
@@ -109,7 +109,7 @@ export function makeFactory(): (require: (mod: string) => any) => any {
           return () => {};
         }
         return commandUi.decorate({
-          name: 'pet',
+          name: 'pet-nhd',
           available: () => true,
           ui: {
             kind: 'popupSelect',
@@ -147,7 +147,7 @@ export function makeFactory(): (require: (mod: string) => any) => any {
             // 对话气泡：94 个内置图标里唯一的纯对话气泡
             ['chat', { label: () => t('cmd.chat'), icon: icons.IconQueueOutlineRegular }],
             // 双人形：多只桌宠里挑一只
-            ['pet', { label: () => t('cmd.pet'), icon: icons.IconUsersOutlineRegular }],
+            ['pet-nhd', { label: () => t('cmd.pet'), icon: icons.IconUsersOutlineRegular }],
             // 仪表盘：额度 / 用量
             ['balance', { label: () => t('cmd.balance'), icon: icons.IconGaugeOutlineRegular }],
           ]),
@@ -169,7 +169,7 @@ export function makeFactory(): (require: (mod: string) => any) => any {
 
       // 宠物 overlay（多开：容器渲染多个 PetCard）
       ctx.slots.inject('shell.overlay', function* () {
-        yield ctx.slots.register({ name: 'shell.overlay', id: 'pet', order: 1000 }, () => h(PetMulti, {}));
+        yield ctx.slots.register({ name: 'shell.overlay', id: 'pet-nhd', order: 1000 }, () => h(PetMulti, {}));
       });
 
       // 设置页：「桌宠配置」（大小/位置/模型，保存即时生效）。
@@ -177,7 +177,7 @@ export function makeFactory(): (require: (mod: string) => any) => any {
       const PetConfigSection = makePetConfigSection({ h, useState, useEffect, useRef, useCallback, t });
       ctx.slots.inject('settings.section', function* () {
         yield ctx.slots.register(
-          { name: 'settings.section', id: 'pet-config', order: 30, label: () => t('nav'), inject: () => ({ t }) },
+          { name: 'settings.section', id: 'pet-nhd-config', order: 30, label: () => t('nav'), inject: () => ({ t }) },
           PetConfigSection,
         );
       });

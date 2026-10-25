@@ -40,7 +40,7 @@ function restrictFile(path: string): void {
 }
 
 function configPath(home: string): string {
-  const directory = join(home, 'dsh-pet');
+  const directory = join(home, 'dsh-pet-nhd');
   if (!existsSync(directory)) mkdirSync(directory, { recursive: true, mode: 0o700 });
   const info = lstatSync(directory);
   if (!info.isDirectory() || info.isSymbolicLink()) throw new Error('Unsafe settings directory');

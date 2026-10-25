@@ -36,10 +36,10 @@ test('capabilities are random, fragment-only, and process-bound', () => {
 test('encoded private routes still require a capability; invalid encodings fail explicitly', () => {
   const security = createRequestSecurity();
   for (const path of [
-    '/dsh-pet-7340/%63hat?pet=main',
-    '/dsh-pet-7340/ch%61t',
-    '/dsh-pet-7340/chat%2Fhistory',
-    '/dsh-pet-7340/%77hisper',
+    '/dsh-pet-nhd-7340/%63hat?pet=main',
+    '/dsh-pet-nhd-7340/ch%61t',
+    '/dsh-pet-nhd-7340/chat%2Fhistory',
+    '/dsh-pet-nhd-7340/%77hisper',
   ]) {
     for (const method of ['GET', 'HEAD']) {
       const res = response();
@@ -58,7 +58,7 @@ test('encoded private routes still require a capability; invalid encodings fail 
     const res = response();
     assert.equal(
       security.authorize(
-        request({ 'x-dsh-pet-token': security.token }, '/dsh-pet-7340/%ZZ', method),
+        request({ 'x-dsh-pet-token': security.token }, '/dsh-pet-nhd-7340/%ZZ', method),
         res as unknown as ServerResponse,
       ),
       false,
@@ -66,7 +66,7 @@ test('encoded private routes still require a capability; invalid encodings fail 
     assert.equal(res.status, 400);
   }
   assert.equal(
-    security.authorize(request({}, '/dsh-pet-7340/thumb/main/%E7%9C%8B.webm'), response() as unknown as ServerResponse),
+    security.authorize(request({}, '/dsh-pet-nhd-7340/thumb/main/%E7%9C%8B.webm'), response() as unknown as ServerResponse),
     true,
   );
 });
@@ -74,7 +74,7 @@ test('encoded private routes still require a capability; invalid encodings fail 
 test('desktop file-origin exception always needs a capability and never relaxes Host checks', () => {
   const security = createRequestSecurity();
   const fileHeaders = { origin: 'null', 'sec-fetch-site': 'cross-site' };
-  for (const path of ['/dsh-pet-7340/config', '/dsh-pet-7340/chat']) {
+  for (const path of ['/dsh-pet-nhd-7340/config', '/dsh-pet-nhd-7340/chat']) {
     assert.equal(security.authorize(request(fileHeaders, path), response() as unknown as ServerResponse, true), false);
     const headers = { ...fileHeaders, 'x-dsh-pet-token': security.token };
     assert.equal(security.authorize(request(headers, path), response() as unknown as ServerResponse, true), true);
@@ -155,8 +155,8 @@ test('only minimal health, settings shell and known media GET are public; public
     '/health',
     '/standalone-ai/',
     '/standalone-ai/settings.js',
-    '/dsh-pet-7340/thumb/main/idle.webm',
-    '/dsh-pet-7340/pic/memes/main/a.png',
+    '/dsh-pet-nhd-7340/thumb/main/idle.webm',
+    '/dsh-pet-nhd-7340/pic/memes/main/a.png',
   ]) {
     assert.equal(security.authorize(request({}, path), response() as unknown as ServerResponse), true, path);
     assert.equal(
@@ -166,10 +166,10 @@ test('only minimal health, settings shell and known media GET are public; public
     );
     assert.equal(security.authorize(request({}, path, 'POST'), response() as unknown as ServerResponse), false, path);
   }
-  for (const path of ['/standalone-ai/settings', '/dsh-pet-7340/whisper', '/dsh-pet-7340/chat', '/shutdown']) {
+  for (const path of ['/standalone-ai/settings', '/dsh-pet-nhd-7340/whisper', '/dsh-pet-nhd-7340/chat', '/shutdown']) {
     assert.equal(security.authorize(request({}, path), response() as unknown as ServerResponse), false, path);
   }
-  for (const path of ['/dsh-pet-7340/config', '/dsh-pet-7340/state']) {
+  for (const path of ['/dsh-pet-nhd-7340/config', '/dsh-pet-nhd-7340/state']) {
     assert.equal(security.authorize(request({}, path), response() as unknown as ServerResponse), true, path);
     assert.equal(
       security.authorize(request({ origin: 'http://evil.test' }, path), response() as unknown as ServerResponse),

@@ -4,7 +4,7 @@
  * 这四类位置分属互不相干的基准目录，本模块按「谁写得进谁说了算」分两种来源：
  *
  *   1) 直接吃真实写入方给的路径（零重复，不存在漂移）：
- *      - 用户数据    ← 调用方传 index.ts 的 userRoot（拼 'dsh-pet' 的地方只有那一处）
+ *      - 用户数据    ← 调用方传 index.ts 的 userRoot（拼 'dsh-pet-nhd' 的地方只有那一处）
  *      - Electron    ← 调用方传 helper-process.ts 的 electronLandingDir()（下载方的唯一定义）
  *
  *   2) 系统规则，本模块按平台镜像一份（写入方不是本仓库的代码，无法调用）：
@@ -24,7 +24,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 /** 桌面端 Electron userData 目录名（= main.js 的 app.setName 入参） */
-export const DESKTOP_APP_NAME = 'dsh-pet-electron-helper';
+export const DESKTOP_APP_NAME = 'dsh-pet-nhd-electron-helper';
 
 /** Electron 下载缓存的应用名（@electron/get 写死 env-paths('electron')，与插件名无关） */
 const ELECTRON_PATHS_NAME = 'electron';
@@ -43,7 +43,7 @@ export interface StorageEntry {
 export interface StoragePathInput {
   /**
    * 插件用户数据根 —— 传 index.ts 里那个**真实用于写盘**的 userRoot；
-   * 本模块不自己拼 'dsh-pet'（拼一遍就多一处会漂移的硬编码）。
+   * 本模块不自己拼 'dsh-pet-nhd'（拼一遍就多一处会漂移的硬编码）。
    */
   userDataRoot: string;
   /** Electron 运行时落地目录 —— 传 helper-process.ts 的 electronLandingDir()（下载方的唯一定义） */

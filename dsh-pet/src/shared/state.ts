@@ -48,7 +48,7 @@ function normLeaf(value: unknown): StateLeaf | null {
  * （立刻返回）或超时。不传 = 立刻返回全量（改造前的语义）。
  */
 export async function fetchState(
-  baseUrl = '/dsh-pet-7340/state',
+  baseUrl = '/dsh-pet-nhd-7340/state',
   wait?: { since: number; timeoutMs: number },
 ): Promise<PollState | null> {
   try {

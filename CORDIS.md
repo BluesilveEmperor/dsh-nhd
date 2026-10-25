@@ -1,9 +1,9 @@
 # dsh-pet 对外 Cordis 服务
 
-同名服务 `petApi7340` 在两半各有一份，分属不同容器（宿主进程 / DSH web 页面），互不可见。
+同名服务 `petNhdApi7340` 在两半各有一份，分属不同容器（宿主进程 / DSH web 页面），互不可见。
 
 ```js
-ctx.get('petApi7340')
+ctx.get('petNhdApi7340')
 ```
 
 拿不到对应分组 = 你在另一半，或 dsh-pet 未启用 / 版本过旧。
@@ -31,7 +31,7 @@ ctx.get('petApi7340')
 `null`：这一页没有这只宠物。
 
 ```js
-ctx.get('petApi7340').pose('main');
+ctx.get('petNhdApi7340').pose('main');
 // { x: 0.8467, y: 0.2438, facing: 'left' }
 ```
 
@@ -57,7 +57,7 @@ ctx.get('petApi7340').pose('main');
 `null`：这一页没有这只宠物。
 
 ```js
-ctx.get('petApi7340').progress('main');
+ctx.get('petNhdApi7340').progress('main');
 // { playbackId: 'pb_1755...', anim: 'walk', currentTime: 3.42, duration: 10.09, paused: false, buffering: false }
 ```
 
@@ -89,11 +89,11 @@ ctx.get('petApi7340').progress('main');
 | `points` | `{ unit, total, full? }` |
 
 ```js
-export const inject = ['petApi7340'];
+export const inject = ['petNhdApi7340'];
 
 export function apply(ctx) {
   ctx.effect(() =>
-    ctx.get('petApi7340').balance.register({
+    ctx.get('petNhdApi7340').balance.register({
       id: 'my-gateway',
       async fetch({ provider }) {
         const res = await fetch('http://127.0.0.1:8080/v1/credits', { signal: AbortSignal.timeout(20_000) });
@@ -120,6 +120,6 @@ export function apply(ctx) {
 | `external` | string[] | 第三方已注册 id |
 
 ```js
-ctx.get('petApi7340').balance.list();
+ctx.get('petNhdApi7340').balance.list();
 // { builtin: ['opencode-go', 'commandcode', 'deepseek-official', 'deepseek-account'], external: ['my-gateway'] }
 ```

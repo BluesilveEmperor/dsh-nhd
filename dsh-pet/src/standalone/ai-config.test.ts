@@ -64,10 +64,10 @@ test('persists only in isolated home, redacts keys, supports keep and clear, rel
     assert.equal(saved.whisperIntervalSec, 300);
     assert.equal((await store.save({ apiKey: '', automaticWhispers: true })).hasKey, true);
     assert.equal(createAiConfig(home).publicSettings().model, 'chosen-model');
-    assert.match(readFileSync(join(home, 'dsh-pet', 'standalone-ai.json'), 'utf8'), /test-secret/);
+    assert.match(readFileSync(join(home, 'dsh-pet-nhd', 'standalone-ai.json'), 'utf8'), /test-secret/);
     assert.equal((await store.save({ clearApiKey: true, enabled: false })).hasKey, false);
     assert.equal(createAiConfig(home).publicSettings().enabled, false);
-    writeFileSync(join(home, 'dsh-pet', 'standalone-ai.json'), '{broken');
+    writeFileSync(join(home, 'dsh-pet-nhd', 'standalone-ai.json'), '{broken');
     assert.throws(() => createAiConfig(home), /^Error: Cannot securely load standalone AI settings\.$/);
   } finally {
     rmSync(home, { recursive: true, force: true });

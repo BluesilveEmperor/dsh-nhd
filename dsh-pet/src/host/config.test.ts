@@ -953,7 +953,7 @@ describe('syncUserConfigFromDefault —— 同步（内置默认原文写入用�
     const dir = mkdtempSync(join(tmpdir(), 'dsh-pet-sync-test-'));
     const paths: ConfigPaths = {
       defaultFile: join(dir, 'default.jsonc'),
-      userFile: join(dir, 'dsh-pet', 'main-config.jsonc'),
+      userFile: join(dir, 'dsh-pet-nhd', 'main-config.jsonc'),
       petDir: join(dir, 'pet'),
     };
     writeFileSync(paths.defaultFile, raw);

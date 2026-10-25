@@ -1,5 +1,5 @@
 /**
- * 桌面端「重载配置」契约测试：右键菜单 → POST /dsh-pet-7340/reload → 宿主 syncDesktop()。
+ * 桌面端「重载配置」契约测试：右键菜单 → POST /dsh-pet-nhd-7340/reload → 宿主 syncDesktop()。
  *
  * 背景：桌面宠物的配置只在 Helper 启动时拉一次（renderer.js 的 boot → GET /config），手改配置文件后
  * 桌面端不会自己跟上——此前唯一的生效途径是回设置页点「保存」，而保存只是顺带重启了 Helper。

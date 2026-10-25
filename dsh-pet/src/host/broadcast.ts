@@ -1,5 +1,5 @@
 /**
- * 气泡两个端点（`POST /dsh-pet-7340/broadcast` 与 `POST /dsh-pet-7340/bubble/clear`）的
+ * 气泡两个端点（`POST /dsh-pet-nhd-7340/broadcast` 与 `POST /dsh-pet-nhd-7340/bubble/clear`）的
  * **纯决策层**——两者写的是同一个叶子（`pets.<id>.say`），也共用同一条"pet 落到哪只"的规则，
  * 所以放在一起，免得两处各写一遍走样。
  *

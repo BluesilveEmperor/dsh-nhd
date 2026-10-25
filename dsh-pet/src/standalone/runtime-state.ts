@@ -12,7 +12,7 @@ interface RuntimeDetails {
 
 /** 只给本机启动器的能力文件；HTTP health 不得包含其 token/settingsUrl。 */
 export function writeStandaloneRuntime(home: string, details: RuntimeDetails): () => void {
-  const directory = join(home, 'dsh-pet');
+  const directory = join(home, 'dsh-pet-nhd');
   mkdirSync(directory, { recursive: true });
   const file = join(directory, 'standalone-runtime.json');
   try {

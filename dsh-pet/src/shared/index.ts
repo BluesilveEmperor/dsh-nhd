@@ -2,7 +2,7 @@
 // 约定：
 //   - 只含无 React / DOM 依赖的纯函数、类型、常量、拍平逻辑；
 //   - 配置的读取/合并/校验收敛在 host（src/host/config.ts 的 readAllConfig，经
-//     GET /dsh-pet-7340/config 暴露成品）；本目录只负责把成品拍平成渲染列表（flattenConfigPets）；
+//     GET /dsh-pet-nhd-7340/config 暴露成品）；本目录只负责把成品拍平成渲染列表（flattenConfigPets）；
 //   - host 半侧**不得** import 本目录（DSH 单文件加载约束会拆 chunk 导致加载失败），
 //     其配置实现是自包含的（见 src/host/config.ts 头部注释）；
 //   - 新增「行为」请落在这里 + 两边的薄壳（浏览器 React 组件 / 桌面 DOM sprite）。

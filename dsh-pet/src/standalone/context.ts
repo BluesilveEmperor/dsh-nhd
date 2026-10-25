@@ -36,7 +36,7 @@ export interface StandaloneLogger {
 export interface RegisteredRoute {
   /** `prefix`（插件当前只用这一种）或 `exact`，原样透传 */
   kind: string;
-  /** 路由路径，例如 `/dsh-pet-7340`；独立模式按它做前缀匹配，不自己硬编码前缀 */
+  /** 路由路径，例如 `/dsh-pet-nhd-7340`；独立模式按它做前缀匹配，不自己硬编码前缀 */
   path: string;
   /** 真实 Node HTTP handler：自己写响应头与 body（与 DSH WebServer 的契约一致） */
   handler: (req: IncomingMessage, res: ServerResponse) => unknown;

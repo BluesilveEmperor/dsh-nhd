@@ -38,7 +38,7 @@ test('oversize, non-file and invalid persisted settings fail closed with sanitiz
   };
   try {
     assert.equal(readAiSettings(home), undefined);
-    const path = join(home, 'dsh-pet', 'standalone-ai.json');
+    const path = join(home, 'dsh-pet-nhd', 'standalone-ai.json');
     writeFileSync(path, 'secret'.repeat(6000));
     assert.throws(() => createStandaloneAi(home, logger), /^Error: Cannot securely load standalone AI settings\.$/);
     rmSync(path);
@@ -62,7 +62,7 @@ test('persistence failure pauses a previously ready backend and never logs key m
   const ai = createStandaloneAi(home, logger);
   try {
     await ai.saveSettings({ model: 'selected', baseUrl: 'https://example.test', apiKey: 'test-secret', enabled: true });
-    const path = join(home, 'dsh-pet', 'standalone-ai.json');
+    const path = join(home, 'dsh-pet-nhd', 'standalone-ai.json');
     rmSync(path);
     mkdirSync(path);
     await assert.rejects(

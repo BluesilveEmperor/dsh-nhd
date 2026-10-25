@@ -1,7 +1,7 @@
 // 宠物页面：单个宠物实例（PetCard）+ 多开容器（PetMulti）。
 // 工厂形态与 settings.ts 一致：client 半侧不能顶层 import react，
 // react 能力由 DSH 运行时注入（rt），组件在工厂内制造。
-// 配置唯一入口 = GET /dsh-pet-7340/config 的**成品聚合**（host readAllConfig 保证绝对正确）：
+// 配置唯一入口 = GET /dsh-pet-nhd-7340/config 的**成品聚合**（host readAllConfig 保证绝对正确）：
 // PetMulti 一次拉取 → flattenConfigPets 拍平成渲染列表，PetCard 直接读字段，零校验零兜底。
 // 纯逻辑（选择/移动几何/余额/拍平）来自 src/shared —— 与桌面模式共用同一份源码。
 import {
@@ -158,8 +158,8 @@ const css = [
   '.dsh-pet-video.is-front{opacity:1}',
   // 触屏拖拽必需：缺 touch-action:none 时浏览器把手势判成页面滚动并发 pointercancel，
   // 宠物就不跟手指走；两条 -webkit-* 抑制长按选中与 iOS 长按呼出系统菜单
-  '.dsh-pet-hit{position:absolute;pointer-events:auto;cursor:url("/dsh-pet-7340/pic/cursor-grab.png") 16 16, grab;z-index:1;touch-action:none;-webkit-user-select:none;-webkit-touch-callout:none}',
-  '.dsh-pet-hit.dragging{cursor:url("/dsh-pet-7340/pic/cursor-grabbing.png") 16 16, grabbing}',
+  '.dsh-pet-hit{position:absolute;pointer-events:auto;cursor:url("/dsh-pet-nhd-7340/pic/cursor-grab.png") 16 16, grab;z-index:1;touch-action:none;-webkit-user-select:none;-webkit-touch-callout:none}',
+  '.dsh-pet-hit.dragging{cursor:url("/dsh-pet-nhd-7340/pic/cursor-grabbing.png") 16 16, grabbing}',
   '@media (prefers-reduced-motion: reduce){.dsh-pet-video{transition:none}}',
   // 统一右键菜单样式（与桌面注入同一份 MENU_CSS）
   MENU_CSS,
@@ -170,7 +170,7 @@ const cssTag = 'dsh-pet/style.css';
 function injectCss(): void {
   if (typeof document !== 'undefined' && document.querySelector('style[data-plugin-css="' + cssTag + '"]') === null) {
     const tag = document.createElement('style');
-    tag.dataset.plugin = 'dsh-pet';
+    tag.dataset.plugin = 'dsh-pet-nhd';
     tag.dataset.pluginCss = cssTag;
     tag.textContent = css;
     document.head.appendChild(tag);
@@ -400,7 +400,7 @@ export function makePetUI(rt: {
      */
     const reportPlayback = (playbackId: string, status: string, reason?: string): void => {
       void postAction(
-        '/dsh-pet-7340/playback/' + encodeURIComponent(playbackId) + '/report',
+        '/dsh-pet-nhd-7340/playback/' + encodeURIComponent(playbackId) + '/report',
         reason === undefined ? { status } : { status, reason },
       ).then((ok: boolean) => {
         if (!ok) {
@@ -459,7 +459,7 @@ export function makePetUI(rt: {
       // 一段两条路共用，不做区分——正常请求 URL 就是。
       const assetUrl =
         cueUrl ??
-        '/dsh-pet-7340/thumb/' +
+        '/dsh-pet-nhd-7340/thumb/' +
           encodeURIComponent(cfg.assetRoot ?? cfg.id) +
           '/' +
           encodeURIComponent(next) +
@@ -575,7 +575,7 @@ export function makePetUI(rt: {
     useEffect(() => {
       mountedRef.current = true;
       // 「实况」口子（issue #122 第 1 条）：把这一页里这只宠物的实时位置/朝向注册给 Cordis 只读
-      // 服务 `petApi7340`（见 ./pose）。**按需读**——消费者每次调用都走这个闭包取当前值，所以走位、
+      // 服务 `petNhdApi7340`（见 ./pose）。**按需读**——消费者每次调用都走这个闭包取当前值，所以走位、
       // 抛掷、拖拽**中途**也能读到，不是快照。
       // 坐标与 POST /position 同一口径：宠物**中心**的归一化 0~1。
       const unregisterPose = registerPose(cfg.id, () => ({
@@ -1704,7 +1704,7 @@ export function makePetUI(rt: {
           lockTimerRef.current = null;
         }
         applyFreeze(false);
-        void postAction('/dsh-pet-7340/lock/release?pet=' + encodeURIComponent(cfg.id), { force: true });
+        void postAction('/dsh-pet-nhd-7340/lock/release?pet=' + encodeURIComponent(cfg.id), { force: true });
       }
       // 抓取速度日志：stopThrow 之前读，否则飞行速度就没了；静止时记录 0
       const grabState = throwStateRef.current;
@@ -1975,7 +1975,7 @@ export function makePetUI(rt: {
         // 带上当前宠物的 id——同一条菜单项在不同宠物上被点，注册方要能分辨是哪只。
         const owner = leaf.owner ?? '';
         if (owner !== '') {
-          postAction('/dsh-pet-7340/menu/click', { owner, label: leaf.label, pet: cfg.id }).catch((e: unknown) =>
+          postAction('/dsh-pet-nhd-7340/menu/click', { owner, label: leaf.label, pet: cfg.id }).catch((e: unknown) =>
             console.warn('[dsh-pet] 第三方菜单点击上报失败', e),
           );
         }
@@ -1986,7 +1986,7 @@ export function makePetUI(rt: {
         // 结果**这里什么都不用做**：写叶子会让版本号变，挂着的长轮询那一拍立刻返回并展示（0 延迟）。
         // 动作端点不回数据：余额只有一个出口（/state 的 sections.balance），与碎碎念同一条契约。
         console.info('[dsh-pet] 菜单查看余额 pet=' + cfg.id);
-        postAction('/dsh-pet-7340/balance')
+        postAction('/dsh-pet-nhd-7340/balance')
           .then((ok: boolean) => {
             if (!ok) console.warn('[dsh-pet] 余额刷新动作未成功 pet=' + cfg.id);
           })
@@ -1999,7 +1999,7 @@ export function makePetUI(rt: {
         // 手动触发不受 whisperEnabled 限制——该字段只关自动周期，手动永远可用。
         console.info('[dsh-pet] 菜单触发碎碎念 pet=' + cfg.id);
         // surface 必填：本页面就是网页端
-        postAction('/dsh-pet-7340/whisper?pet=' + encodeURIComponent(cfg.id) + '&surface=web')
+        postAction('/dsh-pet-nhd-7340/whisper?pet=' + encodeURIComponent(cfg.id) + '&surface=web')
           .then((ok: boolean) => {
             if (!ok) console.warn('[dsh-pet] 碎碎念手动触发失败 pet=' + cfg.id);
           })
@@ -2016,7 +2016,7 @@ export function makePetUI(rt: {
         const hitRect = stageRef.current?.querySelector('.dsh-pet-hit')?.getBoundingClientRect();
         chatRef.current = mountChatDialog({
           petId: cfg.id,
-          baseUrl: '/dsh-pet-7340/chat',
+          baseUrl: '/dsh-pet-nhd-7340/chat',
           surface: 'web',
           x: hitRect ? hitRect.right + 6 : window.innerWidth - 256,
           y: hitRect ? hitRect.top + 6 : 8,
@@ -2036,7 +2036,7 @@ export function makePetUI(rt: {
         const display = leaf.display;
         if (!display) return;
         console.info('[dsh-pet] 菜单切换显示位置 pet=' + cfg.id + ' display=' + display);
-        void fetch('/dsh-pet-7340/pet-display', {
+        void fetch('/dsh-pet-nhd-7340/pet-display', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ id: cfg.id, display }),
@@ -2332,7 +2332,7 @@ export function makePetUI(rt: {
       const loadMerged = async (): Promise<Record<string, Record<string, unknown>>> => {
         // cache:'no-store' 与 fetchState 同口径：配置是动态的，任何形式的缓存命中都会让
         // 「发现版本变化 → 重拉」拿到旧值（响应端也已带 no-cache，请求端与响应端一起防）
-        const r = await fetch('/dsh-pet-7340/config', { cache: 'no-store' });
+        const r = await fetch('/dsh-pet-nhd-7340/config', { cache: 'no-store' });
         if (!r.ok) throw new Error('config HTTP ' + r.status);
         return (await r.json()) as Record<string, Record<string, unknown>>;
       };

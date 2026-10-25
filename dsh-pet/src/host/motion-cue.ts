@@ -1,5 +1,5 @@
 /**
- * 位置 / 抛掷指令（`POST /dsh-pet-7340/position`、`POST /dsh-pet-7340/throw`）的**纯决策层**。
+ * 位置 / 抛掷指令（`POST /dsh-pet-nhd-7340/position`、`POST /dsh-pet-nhd-7340/throw`）的**纯决策层**。
  *
  * 与 ./anim 同一分工：只判定"该不该受理、受理成什么"，不碰 HTTP、不碰 S，可完全离线单测。
  *

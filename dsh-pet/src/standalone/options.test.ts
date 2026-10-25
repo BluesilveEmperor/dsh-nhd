@@ -61,9 +61,9 @@ describe('configPathsFor —— 配置路径推导（host/index.ts 那份的镜�
   test('内置默认 / 用户主配置 / 旧版回落 / 文件宠物目录', () => {
     assert.deepEqual(paths, {
       defaultFile: join('/pkg', 'assets', 'config.jsonc'),
-      userFile: join('/home/.dsh', 'dsh-pet', 'main-config.jsonc'),
-      legacyUserFile: join('/home/.dsh', 'dsh-pet', 'main-config.json'),
-      petDir: join('/home/.dsh', 'dsh-pet', 'pet'),
+      userFile: join('/home/.dsh', 'dsh-pet-nhd', 'main-config.jsonc'),
+      legacyUserFile: join('/home/.dsh', 'dsh-pet-nhd', 'main-config.json'),
+      petDir: join('/home/.dsh', 'dsh-pet-nhd', 'pet'),
     });
   });
 });

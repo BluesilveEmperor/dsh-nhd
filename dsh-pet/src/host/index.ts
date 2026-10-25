@@ -1,7 +1,7 @@
 /**
  * dsh-pet 宿主半侧（host half）—— 宠物插件的"后端"部分
  *
- * 职责：提供 `/dsh-pet-7340/` 前缀的**业务能力**（handlePetRoute 纯函数，路由与桌面管道共用）。
+ * 职责：提供 `/dsh-pet-nhd-7340/` 前缀的**业务能力**（handlePetRoute 纯函数，路由与桌面管道共用）。
  * 全部配置（内置默认 + 用户主配置 + 文件宠物）由 ./config 的 readAllConfig 统一读取合并，
  * 本文件只消费它的返回值（绝对正确、零校验），不再接触任何配置文件。
  *
@@ -13,47 +13,47 @@
  * 两端行为严格一致（硬契约：浏览器/桌面功能/文案/配置完全对齐）。
  *
  * 路由：
- *   /dsh-pet-7340/config             → 合并后的**成品配置**（{ main:{...}, test1:{...}, ... }，
+ *   /dsh-pet-nhd-7340/config             → 合并后的**成品配置**（{ main:{...}, test1:{...}, ... }，
  *                                每条目字段已填满；浏览器/桌面/设置页的唯一配置入口）
  *                                GET 读取成品；PUT 保存用户层（白名单重建 main-config.jsonc）、
  *                                POST 同步用户层（把内置默认 config.jsonc **原文**整份写入，
  *                                含注释与全部高级字段；合并结果与「没有用户层」等价）——
  *                                两个写接口的**响应体都是保存后的成品聚合**，设置页即时生效
  *                                直接拍平这份响应，客户端不再有第二份"补吹条目级字段"的实现
- *   /dsh-pet-7340/reload              → 桌面端「重载配置」（右键菜单，POST）：重启桌面 Helper，全部桌面
+ *   /dsh-pet-nhd-7340/reload              → 桌面端「重载配置」（右键菜单，POST）：重启桌面 Helper，全部桌面
  *                                宠物窗口按最新配置重建（改配置文件后不必回设置页点保存）；与保存走
  *                                **同一条**重启路径（syncDesktop），宠物数量/display/size 变化同样生效
- *   /dsh-pet-7340/config/meta         → 配置文件与素材目录路径 + 全部存储位置清单
+ *   /dsh-pet-nhd-7340/config/meta         → 配置文件与素材目录路径 + 全部存储位置清单
  *                                       （设置页「高级配置」「卸载与存储」展示用）
- *   /dsh-pet-7340/models              → 可选「服务商 + 模型」清单（设置页「AI 模型」下拉框数据源；
+ *   /dsh-pet-nhd-7340/models              → 可选「服务商 + 模型」清单（设置页「AI 模型」下拉框数据源；
  *                                       与 DSH 模型选择器同源，取宿主 llm 服务的 listProviders/listModels）
- *   /dsh-pet-7340/thumb/<素材根>/<动画名>.webm|.mov  → 素材按宠物归属（.mov 为 macOS 定制，扩展名取决于
+ *   /dsh-pet-nhd-7340/thumb/<素材根>/<动画名>.webm|.mov  → 素材按宠物归属（.mov 为 macOS 定制，扩展名取决于
  *       客户端播放常量 ANIMATION_EXT；本路由固定双扩展名兜底）：
  *       文件宠物 = $DSH_HOME/dsh-pet/pet/<素材根>-animation/（只查自己的，绝不回落）；
  *       主宠物   = $DSH_HOME/dsh-pet/main-animation/<webm|mov>（用户目录，优先）→ 包内 assets/<webm|mov>
  *       <素材根> 是**标识符**（pet/ 下文件名前缀），含分隔符/保留字符即 400（见 ID_FORBIDDEN）
- *   /dsh-pet-7340/state               → **轮询统一状态 S**（GET，前端 1s 轮询的唯一数据源）：
+ *   /dsh-pet-nhd-7340/state               → **轮询统一状态 S**（GET，前端 1s 轮询的唯一数据源）：
  *                                       { sections: { balance, workStatus, notify }, pets: { <id>: { say } } }，
  *                                       每个叶子 = { counter, data }；counter 变了前端才渲染。
  *                                       只读、纯内存、零副作用（绝不在这里触发外部调用/模型生成）。
- *   /dsh-pet-7340/work-status          → 外部写入工作状态（POST = 设置固定外部槽的档位/文案；
+ *   /dsh-pet-nhd-7340/work-status          → 外部写入工作状态（POST = 设置固定外部槽的档位/文案；
  *                                       DELETE = 清空回空闲。不做多写者仲裁/租约/会话管理）
- *   /dsh-pet-7340/balance              → 余额刷新（POST 动作端点，写 S；数据从 /state 读）
- *   /dsh-pet-7340/whisper              → 让某只宠物立即说一句（POST 动作端点，写 S 的 pets.<id>.say；
+ *   /dsh-pet-nhd-7340/balance              → 余额刷新（POST 动作端点，写 S；数据从 /state 读）
+ *   /dsh-pet-nhd-7340/whisper              → 让某只宠物立即说一句（POST 动作端点，写 S 的 pets.<id>.say；
  *                                       响应带生成的 text，配图时带 image）
- *   /dsh-pet-7340/broadcast            → 第三方投喂：把外部给定的文本写进气泡（POST 动作端点，写 S 的
+ *   /dsh-pet-nhd-7340/broadcast            → 第三方投喂：把外部给定的文本写进气泡（POST 动作端点，写 S 的
  *                                       pets.<id>.say；不生成、只搬运，供宿主侧其他插件集成）。
  *                                       配图给 `image`（池内名）或 `url`（第三方自带的完整地址）二选一
- *   /dsh-pet-7340/anim                 → 点播动画：让桌宠播一段动画（POST 动作端点，写 S 的
+ *   /dsh-pet-nhd-7340/anim                 → 点播动画：让桌宠播一段动画（POST 动作端点，写 S 的
  *                                       pets.<id>.anim；供其他插件调用）。`name`（池内名，效果与右键
  *                                       「动作」菜单一致）或 `url`（第三方自带的完整地址，不查池、
  *                                       不走菜单语义）二选一。
  *                                       响应带 playbackId，供 /playback 查**真实回执**
- *   /dsh-pet-7340/lock                 → **占用锁**（issue #122 第 4 项，POST 动作端点）：联动演出
+ *   /dsh-pet-nhd-7340/lock                 → **占用锁**（issue #122 第 4 项，POST 动作端点）：联动演出
  *                                       期间独占这只宠物，除持锁者外全静音。`lockId` 给了 = 续期、
  *                                       没给 = 新建；回 { lockId, expiresAt }。内存态 + TTL。
  *                                       没带 lock 时行为与改造前逐字一致；带了但查不到锁 → lock-lost
- *   /dsh-pet-7340/lock/release         → 释放占用（POST 动作端点）：`lockId` = 持锁者收工 /
+ *   /dsh-pet-nhd-7340/lock/release         → 释放占用（POST 动作端点）：`lockId` = 持锁者收工 /
  *                                       `force` = **渲染端**报告用户接管（拖拽、点击、隐藏、关闭）。
  *                                       占用期间 5 个动作端点必须带 `?lock=<lockId>`，否则
  *                                       lock-required（没带）/ lock-lost（带了不匹配，附 cause）
@@ -67,17 +67,17 @@
  *                                       /bubble/clear、/position、/throw、/lock、/whisper 与
  *                                       /chat 的 POST；/lock/release（释放必须永远能成功）与
  *                                       /chat 的 GET（读记忆与显示在哪一端无关）**不开**。见 ./surface
- *   /dsh-pet-7340/playback/<id>        → **播放回执**（GET）：返回那一次点播的真实状态
+ *   /dsh-pet-nhd-7340/playback/<id>        → **播放回执**（GET）：返回那一次点播的真实状态
  *                                       （accepted/playing/ended/failed/cancelled）。带
  *                                       `?wait=<状态[,状态]>` + `?timeout=<ms>`（**成对必填**）时挂起等待：
  *                                       状态进入 wait 集合立刻返回（matched:true），到点返回当时状态
  *                                       （matched:false）；两者都不传则立刻返回
- *   /dsh-pet-7340/playback/<id>/report → 渲染端上报播放状态（POST，**内部通道**：浏览器/桌面
+ *   /dsh-pet-nhd-7340/playback/<id>/report → 渲染端上报播放状态（POST，**内部通道**：浏览器/桌面
  *                                       渲染进程 → host）。这是回执的**地基**——没有它，记录永远停在
  *                                       accepted（host 只知道"受理了"，不知道播没播完）。见 ./playback
- *   /dsh-pet-7340/chat                 → 对话与记忆（GET 最近窗口 / POST 对话并写 memory.json；
+ *   /dsh-pet-nhd-7340/chat                 → 对话与记忆（GET 最近窗口 / POST 对话并写 memory.json；
  *                                       POST 回 {ok,text,image?}，回复同样写 S 的 pets.<id>.say）
- *   /dsh-pet-7340/font|pic             → 字体 / 通知图标素材
+ *   /dsh-pet-nhd-7340/font|pic             → 字体 / 通知图标素材
  *
  * 系统通知不属于宠物行为、不在这里的旧实现是：浏览器半侧 notify.ts 经 connection 事件流
  * （api.events.mux/host）监听 DSH 事件。但 DSH 0.1.5 已删除该事件流 API——通知改为
@@ -173,7 +173,7 @@ import {
 } from './helper-process';
 
 /** 插件行 id（与 cordis.patch.yml 一致） */
-export const name = 'pet';
+export const name = 'pet-nhd';
 /** 需要注入的服务：webServer（路由）+ agentDefaultModel（当前服务商）+ credentials（凭证）+ llm（对话模型调用）+ commands（/balance 斜杠命令）+ connection（桌面 Helper「打开网站」用的已鉴权站点 URL） */
 export const inject = ['webServer', 'agentDefaultModel', 'credentials', 'llm', 'commands', 'connection'];
 
@@ -187,7 +187,7 @@ const PACKAGE_ROOT_ASSETS = join(PACKAGE_ROOT, 'assets');
 const PACKAGE_MEMES_DIR = join(PACKAGE_ROOT_ASSETS, 'memes');
 
 /** 路由前缀 */
-const ROUTE_PREFIX = '/dsh-pet-7340';
+const ROUTE_PREFIX = '/dsh-pet-nhd-7340';
 
 /**
  * 宿主是不是 **DSH 桌面应用**（Electron 宿主）。
@@ -309,12 +309,12 @@ function readBody(req: IncomingMessage): Promise<string> {
 // 这里不再有 host 侧拷贝——文件宠物与主宠物一样，统一从 readAllConfig 的成品读取。
 // ---------------------------------------------------------------------------
 
-/** 宿主插件主体：注册 `/dsh-pet-7340` 前缀路由 + 斜杠命令（/balance /pet /chat）。 */
+/** 宿主插件主体：注册 `/dsh-pet-nhd-7340` 前缀路由 + 斜杠命令（/balance /pet /chat）。 */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DSH 注入的 ctx（webServer/locale 等 service 无静态类型）
 export function apply(ctx: any): void {
   // 用户数据根：配置与用户素材统一收敛于此（扩展包按 <插件id> 各自建目录）
   const dshHome = resolveDshHome();
-  const userRoot = join(dshHome, 'dsh-pet');
+  const userRoot = join(dshHome, 'dsh-pet-nhd');
   // 统一日志出口（单文件、按大小截断，见 ./log-file）：桌面版 DSH 没有控制台，
   // `ctx.logger` 只写宿主 stdout 等于把排障信息丢掉。放在最前面——下面的配置迁移、
   // 桌面判定、Helper 崩溃/重启都走它；`base` 保留终端输出，node 版行为不变。
@@ -406,10 +406,10 @@ export function apply(ctx: any): void {
   // 与 S 的关系：注册表本身写进 S 的 sections.menu（两端据此拼「更多」）；点击事件**不进 S**——
   // 它是触发不是状态，走 /menu/events 的读取即消费，只给注册它的那个 owner 看。见 ./menu 的说明。
   const menuRegistry = new MenuRegistry();
-  // 对外 Cordis 服务（宿主半侧）：与页面侧的 petApi7340 同名，但分属两个容器，互不可见也互不覆盖。
+  // 对外 Cordis 服务（宿主半侧）：与页面侧的 petNhdApi7340 同名，但分属两个容器，互不可见也互不覆盖。
   // 只暴露 register（返回注销函数，配合 ctx.effect 在卸载时自动清理）与 list（排障用）；
   // 不暴露 unregister：注销走返回值，避免任何插件都能注销别人的 provider。
-  ctx.provide('petApi7340', {
+  ctx.provide('petNhdApi7340', {
     balance: {
       register: registerBalanceProvider,
       list: listBalanceProviders,
@@ -526,7 +526,7 @@ export function apply(ctx: any): void {
   });
 
   // 实况快照（issue #122 第 1 条）：桌面渲染端变化时上报，第三方用 GET /pose 读。
-  // 网页端不走这里——它的位置**天生每个页面一份**，走页面内的 Cordis 服务 `petApi7340`。
+  // 网页端不走这里——它的位置**天生每个页面一份**，走页面内的 Cordis 服务 `petNhdApi7340`。
   const pose = new PoseStore();
 
   /**
@@ -1339,7 +1339,7 @@ export function apply(ctx: any): void {
   const userRootFor = (ext: string): string => join(thumbUserRoot, animSubdirFor(ext));
 
   /** 单次业务路由(WebServer 注册 → HTTP 落盘 / 桌面 Helper 管道 → scheme 应答,共用同一份实现):
-   *  输入只需 rawUrl(/dsh-pet-7340/... + 查询) + method + body 文本;返回 RouteResult(JSON/文本/文件),
+   *  输入只需 rawUrl(/dsh-pet-nhd-7340/... + 查询) + method + body 文本;返回 RouteResult(JSON/文本/文件),
    *  消费方各自落盘——业务逻辑只有一份,两端天然一致(硬契约:浏览器/桌面行为严格对齐)。
    *  signal（可选）：调用方断开时**中止挂起等待**（只有 /playback 的 wait 分支会用到）。
    *  管道侧不传——桌面渲染端不查 /playback；HTTP 侧由注册处按 res 的 close 触发。 */
@@ -1352,7 +1352,7 @@ export function apply(ctx: any): void {
     const url = new URL(rawUrl, 'http://localhost');
     const rest = decodeURIComponent(url.pathname.slice(ROUTE_PREFIX.length + 1));
 
-    // 成品配置：/dsh-pet-7340/config（GET 读取合并成品 / PUT 保存用户层 / POST 同步内置默认）
+    // 成品配置：/dsh-pet-nhd-7340/config（GET 读取合并成品 / PUT 保存用户层 / POST 同步内置默认）
     if (rest === 'config') {
       if (method === 'GET') {
         // 唯一配置入口：readAllConfig 返回绝对正确的完成品聚合（{ main:{...}, test1:{...} }），
@@ -1700,7 +1700,7 @@ export function apply(ctx: any): void {
       }
     }
 
-    // 轮询统一状态（S）：/dsh-pet-7340/state（GET，no-cache）——前端轮询的**唯一**数据源
+    // 轮询统一状态（S）：/dsh-pet-nhd-7340/state（GET，no-cache）——前端轮询的**唯一**数据源
     // （余额 / 工作状态 / 通知 / 配置变更信号 / 宠物说话，形状见 ./state）。
     // 只读、纯内存、**零副作用**：绝不在这里触发外部调用或模型生成——那会把所有人的轮询拖死；
     // 也**不在这里碰磁盘**（早先这里现算配置文件的 mtime 指纹，等于每拍读一次盘，
@@ -1750,7 +1750,7 @@ export function apply(ctx: any): void {
       });
     }
 
-    // 外部写入工作状态：/dsh-pet-7340/work-status
+    // 外部写入工作状态：/dsh-pet-nhd-7340/work-status
     //   POST   = 设置固定外部槽 `api` 的档位（可选任务文案）；任务文案省略 = 保留原值，null = 清空
     //   DELETE = 清空外部槽回空闲（幂等）
     // 只解决"外部程序把状态告诉桌宠"，不做多写者仲裁/租约/会话管理；
@@ -1810,7 +1810,7 @@ export function apply(ctx: any): void {
       };
     }
 
-    // 余额：/dsh-pet-7340/balance（POST = 立即刷新一次并写入 S，返回 {ok}）
+    // 余额：/dsh-pet-nhd-7340/balance（POST = 立即刷新一次并写入 S，返回 {ok}）
     // 动作端点，**不返回余额数据**——数据只有一个出口（/state），这里只负责"让它刷新"。
     // 改造前这里是 GET（直接查余额）+ /balance/trigger（1s 计数轮询）两个端点，都已删除：
     // 前端不再各自定时查余额（host 定时器统一查，两端共享一份），也不再需要计数轮询中转。
@@ -1821,8 +1821,8 @@ export function apply(ctx: any): void {
       return { kind: 'json', status: 200, obj: { ok: true } };
     }
 
-    // 占用锁：/dsh-pet-7340/lock?pet=<id>          （POST = 取锁 / 续期，二合一）
-    //         /dsh-pet-7340/lock/release?pet=<id>  （POST = 释放）
+    // 占用锁：/dsh-pet-nhd-7340/lock?pet=<id>          （POST = 取锁 / 续期，二合一）
+    //         /dsh-pet-nhd-7340/lock/release?pet=<id>  （POST = 释放）
     //
     // issue #122 第 4 项「独立动作/气泡占用」。一把锁、**全有全无**：拿锁 → 回 lockId；占用期间
     // 除持锁者外全静音（5 个动作端点要带 `?lock=`，内部自动来源各自让路）；释放 → 一切复原。
@@ -1884,7 +1884,7 @@ export function apply(ctx: any): void {
       }
     }
 
-    // 碎碎念：/dsh-pet-7340/whisper?pet=<id>（POST = 立即让桌宠新说一句，返回 {ok,text,image?}）
+    // 碎碎念：/dsh-pet-nhd-7340/whisper?pet=<id>（POST = 立即让桌宠新说一句，返回 {ok,text,image?}）
     // 文本**照旧**写进 S 的 pets.<id>.say（碎碎念/命令气泡/对话回复同一个叶子），同时随响应带回——
     // 两条出口给的是同一份文本；其它消费端（网页/桌面/第三方监听）仍从 /state 读。
     // 手动语义不受 whisperEnabled 门控：那个字段只关自动周期（与改造前一致）。
@@ -1917,7 +1917,7 @@ export function apply(ctx: any): void {
       }
     }
 
-    // 第三方投喂：/dsh-pet-7340/broadcast?pet=<id>（POST = 把一段**外部给定的**文本写进桌宠气泡）
+    // 第三方投喂：/dsh-pet-nhd-7340/broadcast?pet=<id>（POST = 把一段**外部给定的**文本写进桌宠气泡）
     // 与 /whisper 的区别：这个**不生成**，调用方自己给文本——宿主侧其他插件（女仆巡检等）
     // 想说自己的话时用它，桌宠就成了那套人格的"实体"（见 issue #76）。
     // 写入 S 的 pets.<id>.say —— 与碎碎念/对话回复**同一个叶子**，两端 1s 内自动显示，前端零改动。
@@ -1989,7 +1989,7 @@ export function apply(ctx: any): void {
       }
     }
 
-    // 清空气泡：/dsh-pet-7340/bubble/clear?pet=<id>（POST = 收起该宠物**当前正显示的说话气泡**）
+    // 清空气泡：/dsh-pet-nhd-7340/bubble/clear?pet=<id>（POST = 收起该宠物**当前正显示的说话气泡**）
     // 与 /broadcast 的关系：投喂写气泡，这个收气泡；两者共用同一个叶子（pets.<id>.say）。
     // 清空靠叶子里的 `{ clear: true }` 标记——**空文本表达不了这个动作**：消费端的 readSay
     // 会把空文本判成非法、整拍跳过，所以必须有一个独立的形态（见 src/shared/state.ts 的 SayCue）。
@@ -2021,7 +2021,7 @@ export function apply(ctx: any): void {
       }
     }
 
-    // 点播动画：/dsh-pet-7340/anim?pet=<id>（POST = 让桌宠播一段动画）
+    // 点播动画：/dsh-pet-nhd-7340/anim?pet=<id>（POST = 让桌宠播一段动画）
     // 两种形态**二选一**（issue #122 第 1 条）：
     //   name = 池内的动画名。效果与右键菜单点「动作」树**完全一致**——两端都复用同一个菜单动作
     //     处理函数（浏览器 handleMenuAction / 桌面 sprite.onMenuAction），宿主只负责把名字送到。
@@ -2088,7 +2088,7 @@ export function apply(ctx: any): void {
       }
     }
 
-    // 位置与抛掷：/dsh-pet-7340/position 与 /dsh-pet-7340/throw（POST）——两条**运动指令**。
+    // 位置与抛掷：/dsh-pet-nhd-7340/position 与 /dsh-pet-nhd-7340/throw（POST）——两条**运动指令**。
     //
     // 与 /anim 同族：受理后写进 S 的宠物叶子（pets.<id>.position / pets.<id>.throw），由渲染端消费。
     // 位置**不引入任何新运动学**：`mode` 三选一（instant 一帧到位 / spring 拖拽那套过阻尼弹簧 /
@@ -2152,12 +2152,12 @@ export function apply(ctx: any): void {
       }
     }
 
-    // 实况：/dsh-pet-7340/pose?pet=<id>        （GET  = 第三方读**桌面端**的实况快照）
-    //       /dsh-pet-7340/pose/report?pet=<id> （POST = **桌面渲染端**上报，内部通道）
+    // 实况：/dsh-pet-nhd-7340/pose?pet=<id>        （GET  = 第三方读**桌面端**的实况快照）
+    //       /dsh-pet-nhd-7340/pose/report?pet=<id> （POST = **桌面渲染端**上报，内部通道）
     //
     // 为什么只有桌面端走这条路：桌面宠物**一窗一只**，位置全局唯一一份 → 宿主快照语义干净；
     // 而网页端的位置**天生每个页面一份**（开两个标签页时两边本来就不同），塞进宿主快照必然是
-    // 错的（后写者覆盖先写者）。所以网页端走**页面内**的 Cordis 只读服务 `petApi7340`
+    // 错的（后写者覆盖先写者）。所以网页端走**页面内**的 Cordis 只读服务 `petNhdApi7340`
     // （src/client/pose.ts）——两边**字段名与坐标口径完全一致**（中心点归一化 0~1，与 /position
     // 同源），只是"取"的方式不同。
     //
@@ -2224,8 +2224,8 @@ export function apply(ctx: any): void {
       }
     }
 
-    // 播放回执：/dsh-pet-7340/playback/<id>        （GET 查询，可挂起等待）
-    //           /dsh-pet-7340/playback/<id>/report （POST，**渲染端上报**）
+    // 播放回执：/dsh-pet-nhd-7340/playback/<id>        （GET 查询，可挂起等待）
+    //           /dsh-pet-nhd-7340/playback/<id>/report （POST，**渲染端上报**）
     //
     // 记录由**渲染端上报驱动**（见 ./playback）：host 只知道"受理了"，不知道播没播完——
     // 所以没有 /report 就没有真实回执，查询永远停在 accepted。
@@ -2306,7 +2306,7 @@ export function apply(ctx: any): void {
       });
     }
 
-    // 对话：/dsh-pet-7340/chat?pet=<id>
+    // 对话：/dsh-pet-nhd-7340/chat?pet=<id>
     //   GET  —— 最近记忆窗口（截尾 chatMemoryRounds 轮），弹窗打开时展示（一次性读，不是轮询）
     //   POST —— 携带历史生成回复并写入记忆；回 {ok,text,image?}，回复同样写 S 的 pets.<id>.say
     // 记忆唯一读写方 = host（memory.json；浏览器/桌面两端都只是客户端）→
@@ -2377,7 +2377,7 @@ export function apply(ctx: any): void {
       }
     }
 
-    // 动画文件：/dsh-pet-7340/thumb/<素材根>/<file>，扩展名 webm（默认）/ mov（macOS 定制）。
+    // 动画文件：/dsh-pet-nhd-7340/thumb/<素材根>/<file>，扩展名 webm（默认）/ mov（macOS 定制）。
     // 素材归属按「是否存在该宠物的独立素材目录 `pet/<petId>-animation/`」判定：
     //   - 存在（pet pack 宠物）：只查自己的目录，查不到即 404 显式报错——绝不混用
     //   - 不存在（**所有主配置宠物**，main 与用户添加的任意多只）：主素材链
@@ -2396,8 +2396,8 @@ export function apply(ctx: any): void {
       return { kind: 'file', file: fontFile, contentType: MIME[ext] ?? 'application/octet-stream' };
     }
 
-    // 通知图标：/dsh-pet-7340/pic/<file> → 包内 assets/pic（方形 png，系统通知 icon 用）
-    // 表情包：/dsh-pet-7340/pic/memes/<素材根>/<名称>.png → 按素材根走 memeDirsFor 的目录链
+    // 通知图标：/dsh-pet-nhd-7340/pic/<file> → 包内 assets/pic（方形 png，系统通知 icon 用）
+    // 表情包：/dsh-pet-nhd-7340/pic/memes/<素材根>/<名称>.png → 按素材根走 memeDirsFor 的目录链
     // （种类独占目录 → 用户目录 → 包内），与 /thumb 同一套素材归属语义；名称含中文，URL 段已在上方解码。
     // 旧的两段形式 /pic/memes/<名称>.png 保留：等价于素材根 main 的目录链（未升级的客户端照常取到包内图）。
     if (scope === 'pic') {
@@ -2428,12 +2428,12 @@ export function apply(ctx: any): void {
     }
 
     if (scope !== 'thumb') {
-      return { kind: 'text', status: 400, body: 'dsh-pet: expected /dsh-pet-7340/thumb/<petId>/<file>' };
+      return { kind: 'text', status: 400, body: 'dsh-pet: expected /dsh-pet-nhd-7340/thumb/<petId>/<file>' };
     }
     // thumb 是三段式：/<scope>/<petId>/<file>——从这里再拆宠物 id 与文件名
     const [petId, ...nameParts] = restParts;
     if (!petId || nameParts.length === 0) {
-      return { kind: 'text', status: 400, body: 'dsh-pet: expected /dsh-pet-7340/thumb/<petId>/<file>' };
+      return { kind: 'text', status: 400, body: 'dsh-pet: expected /dsh-pet-nhd-7340/thumb/<petId>/<file>' };
     }
     // petId 是**标识符**（= pet/<名>-animation/ 的 <名>，来源是 pet/ 下的文件名前缀），不是路径片段：
     // 含分隔符/保留字符即显式 400，早于任何路径拼接判定。合法名（含中文）照常——
@@ -2508,7 +2508,7 @@ export function apply(ctx: any): void {
           }
         },
       }),
-    'dsh-pet: /dsh-pet-7340 asset route',
+    'dsh-pet: /dsh-pet-nhd-7340 asset route',
   );
 
   // 工作状态联动：监听 DSH 会话事件 → 聚合"当前活动状态"（WorkStatusStore → 展示快照）。
@@ -2820,7 +2820,7 @@ export function apply(ctx: any): void {
   ctx.effect(
     () =>
       ctx.commands.register({
-        name: 'pet',
+        name: 'pet-nhd',
         description: '选择桌宠（/chat 对话的目标；支持选择框或手输 id/名字）',
         input: { hint: '[宠物 id 或名字]（留空查看当前）' },
         handler: ({ rawInput }: { rawInput: string }) => {

@@ -6,7 +6,7 @@
  * 调用身份：适配器据此生成服务商需要的载体（opencode-go 会翻成 `x-opencode-session`
  * 请求头，缺这个头该路由回 400）。值只需稳定，不要求是真实会话 id。
  */
-export const PET_CALL_IDENTITY = 'dsh-pet';
+export const PET_CALL_IDENTITY = 'dsh-pet-nhd';
 
 /**
  * 没有正文时，按流终止原因给出要展示的原因。

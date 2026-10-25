@@ -58,7 +58,7 @@ test(
         ...process.env,
         DSH_PET_BRIDGE: '0',
         DSH_PET_SMOKE: '0',
-        DSH_PET_CONFIG_URL: `http://127.0.0.1:${server.address().port}/dsh-pet-7340/config`,
+        DSH_PET_CONFIG_URL: `http://127.0.0.1:${server.address().port}/dsh-pet-nhd-7340/config`,
         DSH_PET_PETS: JSON.stringify([{ id: 'main', size: 150 }]),
         DSH_PET_SCALE: '1',
       };
