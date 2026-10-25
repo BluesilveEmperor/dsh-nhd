@@ -83,6 +83,7 @@
     "start:desktop": "node scripts/start-desktop.mjs",
     "standalone": "node lib/standalone.js",
     "pet:nhd:build": "node scripts/build-nhd-config.mjs && node scripts/build-nhd-animations.mjs",
+    "pet:nhd:previews": "node scripts/build-nhd-previews.mjs",
     "pet:nhd:install": "node scripts/install-nhd.mjs",
     "start:app": "node scripts/start-app.mjs",
     "dist": "node scripts/dist.mjs",
