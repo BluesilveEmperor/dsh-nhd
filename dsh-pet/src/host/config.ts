@@ -231,6 +231,45 @@ export function migrateUserConfig(paths: ConfigPaths, log?: (message: string) =>
   return true;
 }
 
+/**
+ * fork 一次性迁移：把用户层里**上游原版默认宠物名**改成当前包内默认名（只改名字，其余原样）。
+ *
+ * 为什么需要：本包是 dsh-pet 的纳西妲 fork，用户层 main-config.jsonc 一旦生成（点过保存/同步
+ * 或改过大小位置），里面的 pets[].name 就被钉在上游的老名字上，"同步"之前一直显示旧名。
+ * 这里按**精确字面替换**改回新默认名——不动其他字段、不动注释、不重排格式（文本级替换），
+ * 只在命中旧名时写一次盘；用户自己起过的名字不会命中，绝不会被覆盖。
+ */
+const FORK_PET_RENAMES: Record<string, string> = {
+  蓝毛小女仆: '纳西妲',
+};
+
+export function adoptForkPetNames(paths: ConfigPaths, log?: (message: string) => void): boolean {
+  const file = effectiveUserFile(paths);
+  if (!file) return false;
+  let raw: string;
+  try {
+    raw = readFileSync(file, 'utf8');
+  } catch {
+    return false; // 读不到（占用/权限）→ 静默放过，下次启动再试
+  }
+  let next = raw;
+  const renamed: string[] = [];
+  for (const [from, to] of Object.entries(FORK_PET_RENAMES)) {
+    const needle = `"name": "${from}"`;
+    if (!next.includes(needle)) continue;
+    next = next.split(needle).join(`"name": "${to}"`);
+    renamed.push(from);
+  }
+  if (next === raw) return false;
+  try {
+    writeFileSync(file, next, 'utf8');
+  } catch {
+    return false;
+  }
+  log?.(`用户配置宠物名已随 fork 更新：${renamed.join('、')} → ${Object.values(FORK_PET_RENAMES).join('、')}`);
+  return true;
+}
+
 interface PetFileEntry {
   /** 文件名前缀 = 条目 key = 素材根 */
   prefix: string;

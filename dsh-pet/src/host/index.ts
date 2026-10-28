@@ -123,6 +123,7 @@ import { parsePlaybackPath, parseWaitQuery, PlaybackStore } from './playback';
 import { PoseStore, normalizePoseInput } from './pose';
 import { SURFACE_TEXT, displayCovers, normalizeSurface, type Surface } from './surface';
 import {
+  adoptForkPetNames,
   findPetInstance,
   flattenPetList,
   ID_FORBIDDEN,
@@ -379,6 +380,8 @@ export function apply(ctx: any): void {
   // 老用户一次性迁移：main-config.json → main-config.jsonc（重命名，内容一字不动；
   // 新文件已存在则不动旧文件）。失败不影响运行——读取侧对旧路径有回落。
   migrateUserConfig(configPaths, (msg) => log.info('[dsh-pet] ' + msg));
+  // fork 迁移：用户层里的上游旧默认宠物名（蓝毛小女仆）自动改成包内新默认名（纳西妲）
+  adoptForkPetNames(configPaths, (msg) => log.info('[dsh-pet] ' + msg));
   // 用户动画目录（thumb 播放时优先于包内素材；webm 放 main-animation/webm/，mov（macOS 定制）放 main-animation/mov/）
   const thumbUserRoot = join(userRoot, 'main-animation');
   // 用户表情包目录（碎碎念/对话配图的图片：优先于包内 assets/memes，加图不必改包）
