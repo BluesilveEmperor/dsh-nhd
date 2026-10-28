@@ -26,9 +26,9 @@ AI 生成动画的配方     源视频 → 透明动画的管线    运行在 DS
 
 ---
 
-## 🌿 dsh-nhd：纳西妲（Nahida）pet pack
+## 🌿 dsh-nhd：纳西妲（Nahida）版
 
-本仓库是 dsh-pet 的衍生分支：在原鲸鱼娘之外，新增了独立宠物种类「**纳西妲**」——依据 20 张小红书参考图定稿的 Q 版萌化形象，外加一张 4.5 头身娘化立绘。动画池、权重、事件档位与主宠物**结构级对齐**（106 个动画槽位、余额 6 档、工作状态 6 档、碎碎念 3 档、80 个分类随机动作），两种宠物可以同屏相处。
+本仓库是 dsh-pet 的衍生分支：把**主宠物换成了「纳西妲」**——依据 20 张小红书参考图定稿的 Q 版萌化形象，外加一张 4.5 头身娘化立绘。动画池、权重、事件档位与上游主宠物**结构级对齐**（106 个动画槽位、余额 6 档、工作状态 6 档、碎碎念 3 档、80 个分类随机动作），装完插件即是纳西妲，无需额外配置。
 
 ### 形象展示
 
@@ -53,7 +53,7 @@ AI 生成动画的配方     源视频 → 透明动画的管线    运行在 DS
 | 方式 | 适用场景 | 做法 |
 |---|---|---|
 | **桌宠应用（推荐）** | 只想养宠物 | 从 [Releases](https://github.com/BluesilveEmperor/dsh-nhd/releases) 下载 `dsh-pet-win-x64.zip`，解压双击 `dsh-pet.exe`——首次启动自动安装纳西妲包，已有配置不会被覆盖 |
-| **pet pack** | 已在用 dsh-pet 插件 | 下载 `dsh-pet-nhd-pet-pack.zip` 解压到 `$DSH_HOME/dsh-pet-nhd/pet/`；或在 clone 的仓库里跑 `cd dsh-pet && npm run pet:nhd:install`（`--force` 覆盖旧包） |
+| **插件（npm）** | 已在用 DeepSeek Harness | 插件管理页安装框填 `dsh-pet-nhd`，或 `dsh plugin --profile web add dsh-pet-nhd`——装完主宠物即纳西妲 |
 | **源码重建** | 想改形象/动作 | `npm run pet:nhd:build`（重新生成配置与 106 个动画），再 `npm run pet:nhd:install` |
 
 ### 与上游的能力差异
