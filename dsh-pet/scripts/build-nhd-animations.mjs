@@ -37,9 +37,11 @@ const RECIPES = {
     rot: `${r(0.055 * s.amp)}*sin(2*PI*t/${f(3 / s.speed)})`,
     y: `(oh-ih)-18+${f(5 * s.amp)}*sin(2*PI*t/${f(3 / s.speed)})`,
   }),
+  // 原地踱步：|sin| 的视觉步频是频率的 2 倍，0.8536 即约 1.7 步/秒（自然步速），
+  // 且 2f×(10s−末帧1/24s) 恰为整数 → 10s 首尾严格接缝；旧配方 4 步/秒会被读成"原地高频抖动"。
   walk: (s) => ({
-    rot: `${r(0.025 * s.amp)}*sin(2*PI*t*${f(2 * s.speed)})`,
-    y: `(oh-ih)-10-${f(8 * s.amp)}*abs(sin(2*PI*t*${f(2 * s.speed)}))`,
+    rot: `${r(0.025 * s.amp)}*sin(2*PI*t*0.3)`,
+    y: `(oh-ih)-10-${f(6 * s.amp)}*abs(sin(2*PI*t*0.8536))`,
   }),
   munch: (s) => ({
     rot: `${r(0.012 * s.amp)}*sin(2*PI*t*${f(2.5 * s.speed)})`,
@@ -49,9 +51,11 @@ const RECIPES = {
     rot: `${r(0.008 * s.amp)}*sin(2*PI*t/${f(6 / s.speed)})`,
     y: `(oh-ih)-8+${f(2 * s.amp)}*sin(2*PI*t/${f(5 / s.speed)})`,
   }),
-  shake: (s) => ({
-    rot: `${r(0.01 * s.amp)}*sin(2*PI*t*${f(4 * s.speed)})`,
-    y: `(oh-ih)-10+${f(2 * s.amp)}*sin(2*PI*t*${f(4 * s.speed)})`,
+  // 工作态：低频轻微起伏 + 极缓侧倾。周期取 10s 的整数分频（5 次与 3 次），
+  // 循环处无跳帧；幅度 ±2px、0.5Hz，绝不会出现高频上下抖动。
+  nod: (s) => ({
+    rot: `${r(0.012 * s.amp)}*sin(2*PI*t*0.3)`,
+    y: `(oh-ih)-10+${f(2.4 * s.amp)}*sin(2*PI*t*0.5)`,
   }),
   droop: (s) => ({
     rot: `${r(0.008 * s.amp)}*sin(2*PI*t/${f(5 / s.speed)})`,
@@ -84,7 +88,7 @@ const CLASSIFIERS = [
   [/数金皱眉/, 'chibi-think', 'breathe'],
   [/袋空如洗|分文不剩/, 'chibi-sad', 'droop'],
   [/思考冒泡/, 'chibi-think', 'breathe'],
-  [/忙碌点按/, 'chibi-work', 'shake'],
+  [/忙碌点按/, 'chibi-work', 'nod'],
   [/清点归档/, 'chibi-work', 'sway'],
   [/原地踱步张望/, 'chibi-idle', 'walk'],
   [/雀跃庆祝/, 'chibi-happy', 'jump'],
@@ -101,12 +105,12 @@ const CLASSIFIERS = [
     'chibi-eat',
     'munch',
   ],
-  [/写代码|轻快记录/, 'chibi-work', 'shake'],
+  [/写代码|轻快记录/, 'chibi-work', 'nod'],
   [/照镜子|整体换装试色/, 'nahida-girl', 'sway'],
   [/撸猫|动物环绕|鲸鱼吐泡泡|蓝鲸现世/, 'chibi-aranara', 'breathe'],
   [/被吓一跳/, 'chibi-sad', 'sway'],
   [/被落叶淹没|玩游戏气急败坏/, 'chibi-sad', 'droop'],
-  [/工作|忙碌|整理/, 'chibi-work', 'shake'],
+  [/工作|忙碌|整理/, 'chibi-work', 'nod'],
   [/思考|观察|问|求教/, 'chibi-think', 'breathe'],
   [
     /舞|跳|跃|摇摆|哼歌|伸懒腰|旋转|放风筝|放烟花|放河灯|孔明灯|圣诞树|舞狮|变鸽子|魔术|凭空生花/,
@@ -158,12 +162,20 @@ const jobs = names
     const { pose, recipe } = classify(name);
     const motion = RECIPES[recipe](seedOf(name));
     return {
+      name,
+      recipe,
       source: join(sourceDir, `${pose}.png`),
       output: join(outputDir, `${name}.webm`),
       ...motion,
       text: TEXT_OVERLAYS.get(name),
     };
   });
+
+/** NHD_DRY_RUN=recipe 时只打印每个动画使用的配方，不做任何编码。 */
+if (process.env.NHD_DRY_RUN === 'recipe') {
+  for (const job of jobs) console.log(`${job.recipe}\t${job.name}`);
+  process.exit(0);
+}
 
 for (const job of jobs) {
   if (!existsSync(job.source)) throw new Error(`Missing source portrait: ${job.source}`);
